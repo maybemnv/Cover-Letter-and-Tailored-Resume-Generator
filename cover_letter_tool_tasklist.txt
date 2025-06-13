@@ -1,0 +1,92 @@
+
+🔥 Auto Cover Letter & Resume Tailor – Build Plan
+
+---------------------------------------------------
+PHASE 1: PLANNING & SETUP
+---------------------------------------------------
+[ ] Define key features:
+    - Paste/upload resume
+    - Paste job description (JD)
+    - Generate tailored cover letter
+    - Suggest resume edits
+    - Export/download results
+
+[ ] Choose stack:
+    - Backend: Python + FastAPI (or Streamlit for MVP)
+    - Frontend/UI: Streamlit (MVP), optional React for future
+    - LLM: OpenAI API (gpt-4o / gpt-4.5)
+    - PDF/docx export: python-docx, pdfkit, or docx2pdf
+
+[ ] Set up project repo (GitHub)
+
+
+---------------------------------------------------
+PHASE 2: CORE FUNCTIONALITY (MVP)
+---------------------------------------------------
+[ ] UI to paste/upload resume
+[ ] UI to paste job description
+[ ] Write prompt to generate:
+    - Cover letter
+    - Resume edit suggestions
+
+[ ] Call OpenAI API using prompt
+[ ] Display response: formatted CL + resume edits
+[ ] Allow user to copy/save results
+
+
+---------------------------------------------------
+PHASE 3: FILE HANDLING & ENHANCEMENTS
+---------------------------------------------------
+[ ] Parse .pdf/.docx resume → text (PyMuPDF, python-docx)
+[ ] Format output: structured cover letter
+[ ] Export to .docx or .pdf (optional)
+[ ] Add basic UI theming (Streamlit)
+
+
+---------------------------------------------------
+PHASE 4: DEPLOYMENT
+---------------------------------------------------
+[ ] Prepare requirements.txt, Procfile (if needed)
+[ ] Deploy to one of the following:
+    - Streamlit Cloud (free, fast)
+    - Render / Railway (for FastAPI)
+
+[ ] Store API keys securely (env or st.secrets)
+
+
+---------------------------------------------------
+PHASE 5: LAUNCH & SHARE
+---------------------------------------------------
+[ ] Create a landing/demo page (Notion, GitHub README)
+[ ] Record 30s demo or gif
+[ ] Share on platforms:
+    - LinkedIn
+    - Twitter
+    - WhatsApp/Telegram groups
+    - Discord/IndieHackers
+
+
+---------------------------------------------------
+PHASE 6 (OPTIONAL): CHROME EXTENSION PREP
+---------------------------------------------------
+[ ] Break logic into an API (FastAPI backend)
+[ ] Create /generate endpoint
+[ ] Chrome popup extension:
+    - Take JD + resume input
+    - Call API
+    - Return formatted CL + edits
+
+
+---------------------------------------------------
+SUMMARY CHECKLIST
+---------------------------------------------------
+| Task                                | Status |
+|-------------------------------------|--------|
+| Plan features & choose stack        | ⬜      |
+| Build UI (Streamlit MVP)            | ⬜      |
+| Integrate OpenAI                    | ⬜      |
+| Handle files & output               | ⬜      |
+| Export docs (optional)              | ⬜      |
+| Deploy app (Streamlit/Render)       | ⬜      |
+| Share with network                  | ⬜      |
+
