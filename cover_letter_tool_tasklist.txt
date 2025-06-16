@@ -14,7 +14,7 @@ PHASE 1: PLANNING & SETUP
 [ ] Choose stack:
     - Backend: Python + FastAPI (or Streamlit for MVP)
     - Frontend/UI: Streamlit (MVP), optional React for future
-    - LLM: OpenAI API (gpt-4o / gpt-4.5)
+    - LLM: Gemini (GEMINI-1.5-FLASH)
     - PDF/docx export: python-docx, pdfkit, or docx2pdf
 
 [ ] Set up project repo (GitHub)
@@ -29,7 +29,7 @@ PHASE 2: CORE FUNCTIONALITY (MVP)
     - Cover letter
     - Resume edit suggestions
 
-[ ] Call OpenAI API using prompt
+[ ] Call Gemini using prompt
 [ ] Display response: formatted CL + resume edits
 [ ] Allow user to copy/save results
 

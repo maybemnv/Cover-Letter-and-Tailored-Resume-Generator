@@ -1,6 +1,0 @@
-openai
-streamlit
-python-docx
-PyMuPDF
-pdfplumber
-python-dotenv
