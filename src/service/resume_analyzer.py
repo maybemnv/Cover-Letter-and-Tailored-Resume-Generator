@@ -135,6 +135,7 @@ class ResumeAnalyzer:
         
         HIGH PRIORITY (Do First):
         - Most impactful changes
+        - A Change in resume Summary according to Job Description and skillset 
         - Quick wins
         - Critical missing elements
         

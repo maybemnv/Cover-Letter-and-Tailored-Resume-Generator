@@ -1,15 +1,68 @@
-"""
-Export utilities for generating document files.
-"""
-
 from docx import Document
 from docx.shared import Pt, Inches
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import pdfkit
 from typing import Dict, Any, Optional, List  # Added List import
 from datetime import datetime
 import os
 from io import BytesIO
+import pdfkit
+import tempfile
+from pathlib import Path
+import streamlit as st
+import subprocess
+
+def convert_to_pdf(content: str, output_path: str) -> str:
+    """
+    Convert content to PDF using pandoc.
+    
+    Args:
+        content (str): The content to convert
+        output_path (str): Path where the PDF file should be saved
+    
+    Returns:
+        str: Path to the created PDF file
+    """
+    # Create temporary HTML file
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False, encoding='utf-8') as temp_html:
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        font-size: 12pt;
+                        line-height: 1.5;
+                        margin: 1in;
+                    }}
+                </style>
+            </head>
+            <body>
+                {content.replace(chr(10), '<br>')}
+            </body>
+        </html>
+        """
+        temp_html.write(html_content)
+        temp_html_path = temp_html.name
+
+    try:
+        # Convert HTML to PDF using pandoc
+        subprocess.run([
+            'pandoc',
+            temp_html_path,
+            '-o', output_path,
+            '--pdf-engine=wkhtmltopdf',
+            '-V', 'geometry:margin=1in'
+        ], check=True)
+        
+        return output_path
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Error converting to PDF: {str(e)}")
+    finally:
+        # Clean up temporary file
+        Path(temp_html_path).unlink(missing_ok=True)
 
 class ExportManager:
     """Manages document export operations."""
@@ -81,70 +134,66 @@ class ExportManager:
             print(f"Error exporting to PDF: {str(e)}")
             return None
 
-def create_cover_letter_docx(content: Dict[str, str], output_path: str) -> bool:
-    """
-    Create a formatted cover letter DOCX file.
+def create_cover_letter_docx(content: str, output_path: str) -> str:
+    """Create a DOCX file with proper formatting and contact information."""
+    doc = Document()
     
-    Args:
-        content (Dict[str, str]): Cover letter content and metadata
-        output_path (str): Path to save the document
+    # Set the default font
+    style = doc.styles['Normal']
+    font = style.font
+    font.name = 'Arial'
+    font.size = Pt(12)
     
-    Returns:
-        bool: Success status
-    """
-    try:
-        doc = Document()
+    # Add contact information header if available
+    if hasattr(st.session_state, 'additional_info'):
+        info = st.session_state.additional_info
         
-        # Set margins
-        sections = doc.sections
-        for section in sections:
-            section.top_margin = Inches(1)
-            section.bottom_margin = Inches(1)
-            section.left_margin = Inches(1)
-            section.right_margin = Inches(1)
-        
-        # Add sender's information
-        for info in [content.get('name', ''), 
-                    content.get('address', ''),
-                    content.get('email', ''),
-                    content.get('phone', '')]:
-            if info:
-                p = doc.add_paragraph()
-                p.add_run(info).bold = True
-        
+        # Contact Header
+        if info.get('full_name'):
+            p = doc.add_paragraph(info['full_name'])
+            p.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            
+        if info.get('email') or info.get('phone'):
+            contact_line = []
+            if info.get('email'):
+                contact_line.append(info['email'])
+            if info.get('phone'):
+                contact_line.append(info['phone'])
+            if contact_line:
+                doc.add_paragraph(' | '.join(contact_line))
+                
+        if info.get('location'):
+            doc.add_paragraph(info['location'])
+            
+        if info.get('linkedin'):
+            doc.add_paragraph(info['linkedin'])
+            
         # Add date
-        doc.add_paragraph()
-        doc.add_paragraph(datetime.now().strftime('%B %d, %Y'))
+        doc.add_paragraph(datetime.now().strftime("%B %d, %Y"))
         
-        # Add recipient's information
+        # Add spacing
         doc.add_paragraph()
-        for info in [content.get('recipient_name', ''),
-                    content.get('company_name', ''),
-                    content.get('company_address', '')]:
-            if info:
-                doc.add_paragraph(info)
         
-        # Add salutation
-        doc.add_paragraph()
-        doc.add_paragraph(content.get('salutation', 'Dear Hiring Manager,'))
-        
-        # Add body
-        doc.add_paragraph()
-        doc.add_paragraph(content.get('body', ''))
-        
-        # Add closing
-        doc.add_paragraph()
-        doc.add_paragraph(content.get('closing', 'Sincerely,'))
-        doc.add_paragraph()
-        doc.add_paragraph(content.get('name', ''))
-        
-        # Save document
-        doc.save(output_path)
-        return True
-        
-    except Exception as e:
-        print(f"Error creating DOCX: {str(e)}")
-        return False
+        # Company Header if available
+        if info.get('company_name') or info.get('hiring_manager'):
+            if info.get('hiring_manager'):
+                doc.add_paragraph(f"Dear {info['hiring_manager']},")
+            else:
+                doc.add_paragraph("Dear Hiring Manager,")
+    
+    # Add main content
+    paragraphs = content.split('\n')
+    for para in paragraphs:
+        if para.strip():
+            p = doc.add_paragraph(para.strip())
+            # Ensure each paragraph uses the correct font settings
+            for run in p.runs:
+                run.font.name = 'Arial'
+                run.font.size = Pt(12)
+    
+    # Save the document
+    doc.save(output_path)
+    return output_path
 
 def convert_to_pdf(docx_path: str, pdf_path: str) -> bool:
     """

@@ -3,6 +3,8 @@ from typing import Dict,List,Tuple,Optional
 from datetime import datetime
 from pathlib import Path
 import base64
+import tempfile
+import pdfkit
 from .sidebar import render_sidebar
 from ..service.file_processor import FileProcessor
 from ..service.cover_letter_generation import get_cover_letter_generator
@@ -58,6 +60,54 @@ def render_main_page(sidebar_options: Optional[Dict] = None):
             )
             if job_desc:
                 st.session_state.job_desc = job_desc  # Store in session state
+    # Additional Information Section
+    with st.expander("📋 Additional Information", expanded=False):
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.subheader("Company Details")
+            company_name = st.text_input("Company Name", key="company_name")
+            hiring_manager = st.text_input("Hiring Manager's Name", key="hiring_manager")
+            
+            st.subheader("Your Contact Info")
+            full_name = st.text_input("Full Name", key="full_name")
+            email = st.text_input("Email Address", key="email")
+            phone = st.text_input("Phone Number", key="phone")
+            location = st.text_input("Location (City, State)", key="location")
+            linkedin = st.text_input("LinkedIn Profile (optional)", key="linkedin")
+        
+        with col2:
+            st.subheader("Additional Context")
+            referral = st.text_input("Referral Name (if any)", key="referral")
+            achievements = st.text_area(
+                "Key Achievements/Skills to Highlight",
+                height=100,
+                key="achievements",
+                help="Enter specific achievements or skills you want to emphasize"
+            )
+            custom_notes = st.text_area(
+                "Additional Notes",
+                height=100,
+                key="custom_notes",
+                help="Any other information you'd like to include"
+            )
+
+    # Store additional info in session state
+    st.session_state.additional_info = {
+        'company_name': company_name,
+        'hiring_manager': hiring_manager,
+        'full_name': full_name,
+        'email': email,
+        'phone': phone,
+        'location': location,
+        'linkedin': linkedin,
+        'referral': referral,
+        'achievements': achievements,
+        'custom_notes': custom_notes
+    }
+    
+    # Horizontal line for visual separation
+    st.markdown("---")
     
     # Action Buttons
     col1, col2, col3 = st.columns(3)
@@ -78,7 +128,6 @@ def render_main_page(sidebar_options: Optional[Dict] = None):
                     if cover_letter:
                         st.session_state.generated_content['cover_letter'] = cover_letter
                         st.success("Cover letter generated successfully!")
-                        st.markdown(cover_letter)
     
     with col2:
         if st.button("🔍 Analyze Match", type="secondary", use_container_width=True):
@@ -96,7 +145,6 @@ def render_main_page(sidebar_options: Optional[Dict] = None):
                     if analysis:
                         st.session_state.generated_content['analysis'] = analysis
                         st.success("Analysis complete!")
-                        st.markdown(analysis)
     
     with col3:
         if st.button("💡 Quick Tips", type="secondary", use_container_width=True):
@@ -114,11 +162,89 @@ def render_main_page(sidebar_options: Optional[Dict] = None):
                     if tips:
                         st.session_state.generated_content['tips'] = tips
                         st.success("Tips generated!")
-                        st.markdown(tips)
 
     # Display results if available
     if st.session_state.get('generated_content'):
-        render_results_section(st.session_state.generated_content)
+        st.markdown("### Results")
+        tab1, tab2, tab3 = st.tabs(["📝 Cover Letter", "🎯 Resume Analysis", "💡 Quick Tips"])
+        
+        # Cover Letter Tab
+        with tab1:
+            if 'cover_letter' in st.session_state.generated_content:
+                st.markdown(st.session_state.generated_content['cover_letter'])
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("Export to DOCX", key="export_docx"):
+                        try:
+                            temp_dir = Path("temp")
+                            temp_dir.mkdir(exist_ok=True)
+                            
+                            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                            output_path = temp_dir / f"cover_letter_{timestamp}.docx"
+                            
+                            # Pass the content directly as a string
+                            cover_letter_content = st.session_state.generated_content['cover_letter']
+                            doc_path = create_cover_letter_docx(
+                                content=cover_letter_content,
+                                output_path=str(output_path)
+                            )
+                            
+                            with open(doc_path, 'rb') as f:
+                                docx_bytes = f.read()
+                            st.download_button(
+                                label="Download DOCX",
+                                data=docx_bytes,
+                                file_name=f"cover_letter_{timestamp}.docx",
+                                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            )
+                            output_path.unlink(missing_ok=True)
+                        except Exception as e:
+                            st.error(f"Error creating DOCX: {str(e)}")
+                
+                with col2:
+                    if st.button("Export to PDF", key="export_pdf"):
+                        try:
+                            # Create temp directory if it doesn't exist
+                            temp_dir = Path("temp")
+                            temp_dir.mkdir(exist_ok=True)
+                            
+                            # Generate unique filename using timestamp
+                            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                            output_path = temp_dir / f"cover_letter_{timestamp}.pdf"
+                            
+                            pdf_path = convert_to_pdf(
+                                st.session_state.generated_content['cover_letter'],
+                                str(output_path)
+                            )
+                            with open(pdf_path, 'rb') as f:
+                                pdf_bytes = f.read()
+                            st.download_button(
+                                label="Download PDF",
+                                data=pdf_bytes,
+                                file_name=f"cover_letter_{timestamp}.pdf",
+                                mime="application/pdf"
+                            )
+                            # Clean up temp file
+                            output_path.unlink(missing_ok=True)
+                        except Exception as e:
+                            st.error(f"Error exporting to PDF: {str(e)}")
+            else:
+                st.info("Generate a cover letter to see it here!")
+
+        # Resume Analysis Tab
+        with tab2:
+            if 'analysis' in st.session_state.generated_content:
+                st.markdown(st.session_state.generated_content['analysis'])
+            else:
+                st.info("Analyze your resume to see insights here!")
+
+        # Quick Tips Tab
+        with tab3:
+            if 'tips' in st.session_state.generated_content:
+                st.markdown(st.session_state.generated_content['tips'])
+            else:
+                st.info("Generate quick tips to see suggestions here!")
 
 def render_input_section() -> Tuple[str, str]:
     """
@@ -218,34 +344,46 @@ def render_file_input():
                 st.error("❌ Failed to process job description file")
 
 def render_additional_info():
-    """Render additional information input."""
+    """Render additional information inputs."""
+    st.markdown("#### Additional Information")
     
-    with st.expander("⚙️ Additional Information (Optional)"):
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            company_name = st.text_input("Company Name", key="company_name")
-            hiring_manager = st.text_input("Hiring Manager Name", key="hiring_manager")
-        
-        with col2:
-            position_title = st.text_input("Position Title", key="position_title")
-            salary_range = st.text_input("Salary Range", key="salary_range")
-        
-        special_instructions = st.text_area(
-            "Special Instructions or Notes",
-            placeholder="Any specific requirements or points to emphasize...",
-            key="special_instructions"
+    # Company Information
+    company_name = st.text_input("Company Name", key="company_name")
+    hiring_manager = st.text_input("Hiring Manager's Name (if known)", key="hiring_manager")
+    
+    # Contact Information
+    with st.expander("Your Contact Information"):
+        full_name = st.text_input("Full Name", key="full_name")
+        email = st.text_input("Email Address", key="email")
+        phone = st.text_input("Phone Number", key="phone")
+        location = st.text_input("Location (City, State)", key="location")
+        linkedin = st.text_input("LinkedIn Profile (optional)", key="linkedin")
+    
+    # Additional Context
+    with st.expander("Additional Context"):
+        referral = st.text_input("Referral Name (if any)", key="referral")
+        specific_achievements = st.text_area(
+            "Specific achievements/skills to highlight",
+            key="achievements"
         )
-        
-        # Store additional info in session state
-        st.session_state.additional_info = {
-            "company_name": company_name,
-            "hiring_manager": hiring_manager,
-            "position_title": position_title,
-            "salary_range": salary_range,
-            "special_instructions": special_instructions
-        }
+        custom_notes = st.text_area(
+            "Additional notes or requirements",
+            key="custom_notes"
+        )
+    
+    # Store all additional info in session state
+    st.session_state.additional_info = {
+        'company_name': company_name,
+        'hiring_manager': hiring_manager,
+        'full_name': full_name,
+        'email': email,
+        'phone': phone,
+        'location': location,
+        'linkedin': linkedin,
+        'referral': referral,
+        'achievements': specific_achievements,
+        'custom_notes': custom_notes
+    }
 
 
 def render_results_section(generated_content: Dict):
@@ -259,45 +397,65 @@ def render_results_section(generated_content: Dict):
     
     # Cover Letter Tab
     with tab1:
-        if 'cover_letter' in generated_content:
-            st.markdown(generated_content['cover_letter'])
+        if 'cover_letter' in st.session_state.generated_content:
+            st.markdown(st.session_state.generated_content['cover_letter'])
             
             col1, col2 = st.columns(2)
             with col1:
-                # Export to DOCX
-                if st.button("Export to DOCX", key="export_docx"):
-                    try:
-                        doc_path = create_cover_letter_docx(generated_content['cover_letter'])
+                try:
+                    # Create temp file and get bytes for DOCX
+                    with tempfile.NamedTemporaryFile(suffix='.docx', delete=False) as tmp_docx:
+                        doc_path = create_cover_letter_docx(
+                            st.session_state.generated_content['cover_letter'],
+                            tmp_docx.name
+                        )
                         with open(doc_path, 'rb') as f:
                             docx_bytes = f.read()
-                        st.download_button(
-                            label="Download DOCX",
-                            data=docx_bytes,
-                            file_name="cover_letter.docx",
-                            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                        )
-                    except Exception as e:
-                        st.error(f"Error exporting to DOCX: {str(e)}")
+                        
+                    # Direct download button for DOCX
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    st.download_button(
+                        label="📄 Download DOCX",
+                        data=docx_bytes,
+                        file_name=f"cover_letter_{timestamp}.docx",
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        use_container_width=True
+                    )
+                    
+                    # Cleanup temp file
+                    Path(doc_path).unlink(missing_ok=True)
+                except Exception as e:
+                    st.error(f"Error creating DOCX: {str(e)}")
             
             with col2:
-                # Export to PDF
-                if st.button("Export to PDF", key="export_pdf"):
-                    try:
-                        pdf_path = convert_to_pdf(generated_content['cover_letter'])
+                try:
+                    # Create temp file and get bytes for PDF
+                    with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp_pdf:
+                        pdf_path = convert_to_pdf(
+                            st.session_state.generated_content['cover_letter'],
+                            tmp_pdf.name
+                        )
                         with open(pdf_path, 'rb') as f:
                             pdf_bytes = f.read()
-                        st.download_button(
-                            label="Download PDF",
-                            data=pdf_bytes,
-                            file_name="cover_letter.pdf",
-                            mime="application/pdf"
-                        )
-                    except Exception as e:
-                        st.error(f"Error exporting to PDF: {str(e)}")
+                        
+                    # Direct download button for PDF
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    st.download_button(
+                        label="📄 Download PDF",
+                        data=pdf_bytes,
+                        file_name=f"cover_letter_{timestamp}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+                    
+                    # Cleanup temp file
+                    Path(pdf_path).unlink(missing_ok=True)
+                except Exception as e:
+                    st.error(f"Error creating PDF: {str(e)}")
         else:
             st.info("Generate a cover letter to see it here!")
 
-    # Resume Analysis Tab  
+    # Resume Analysis Tab
     with tab2:
         if 'analysis' in generated_content:
             st.markdown(generated_content['analysis'])
@@ -314,22 +472,27 @@ def render_results_section(generated_content: Dict):
 # Remove or comment out the other render_* functions that are duplicating functionality
 
 def generate_cover_letter():
-    """Generate cover letter using the AI service."""
-    
-    if not validate_inputs():
-        return
-    
+    """Generate cover letter using all available information."""
     generator = get_cover_letter_generator()
     
-    cover_letter = generator.generate(
-        resume=st.session_state.resume_content,
-        job_description=st.session_state.job_desc_content,
-        additional_info=st.session_state.get('additional_info', {})
-    )
+    # Get additional info from session state
+    additional_info = st.session_state.get('additional_info', {})
     
-    if cover_letter:
-        st.session_state.generated_content['cover_letter'] = cover_letter
-        st.rerun()
+    # Create context dictionary
+    context = {
+        'resume_text': st.session_state.resume_text,
+        'job_description': st.session_state.job_desc,
+        **additional_info  # Unpack all additional info
+    }
+    
+    try:
+        cover_letter = generator.generate(context)
+        if cover_letter:
+            st.session_state.generated_content['cover_letter'] = cover_letter
+            return cover_letter
+    except Exception as e:
+        st.error(f"Error generating cover letter: {str(e)}")
+        return None
 
 def analyze_resume():
     """Analyze resume using the AI service."""

@@ -87,7 +87,8 @@ Based on this resume and job description, provide 5 quick, actionable tips to im
 RESUME: {resume}
 JOB DESCRIPTION: {job_description}
 
-Provide exactly 5 bullet points with specific, actionable advice. Keep each tip under 25 words.
+Provide exactly 7 bullet points with specific, actionable advice. Keep each tip under 50 words and focus on practical suggestions.
+And a new ATS friendly format for the resume and summary for the Job Description.
 """
 
 SKILLS_EXTRACTION_PROMPT = """
