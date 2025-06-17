@@ -77,6 +77,10 @@ Provide a comprehensive analysis with the following sections:
 7. **ACTION ITEMS**
    - Prioritized list of changes to make
    - Quick wins vs. long-term improvements
+8. **ATS FRIENDLY RESUME**
+   - Return a new ATS-friendly version of the resume on the basis of the analysis
+   - Ensure the format is simple, with clear headings and bullet points
+   - Follow the whole analysis to ensure it is tailored to the job description
 
 Be specific, actionable, and constructive. Focus on helping the candidate improve their chances of getting an interview.
 """
