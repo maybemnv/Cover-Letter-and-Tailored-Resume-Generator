@@ -24,19 +24,12 @@ class ResumeAnalyzer:
         # Validate inputs
         is_valid, error_message = validate_inputs(resume, job_description)
         if not is_valid:
-            st.error(error_message)
-            return None
+            raise ValueError(error_message)
         
         # Generate analysis
-        with st.spinner("🔍 Analyzing your resume against the job requirements..."):
-            analysis = self.client.analyze_resume(resume, job_description)
+        analysis = self.client.analyze_resume(resume, job_description)
         
-        if analysis:
-            st.success("✅ Resume analysis completed!")
-            return analysis
-        else:
-            st.error("❌ Failed to analyze resume. Please try again.")
-            return None
+        return analysis
     
     def get_keyword_suggestions(self, resume: str, job_description: str) -> Optional[str]:
         """
@@ -68,8 +61,7 @@ class ResumeAnalyzer:
         Format as a clear, actionable list with explanations.
         """
         
-        with st.spinner("🔑 Analyzing keywords..."):
-            suggestions = self.client.generate_content(prompt)
+        suggestions = self.client.generate_content(prompt)
         
         return suggestions
     
@@ -90,8 +82,7 @@ class ResumeAnalyzer:
         
         Focus on actionable improvements that will make the resume more impactful.
         """
-        with st.spinner("📝 Analyzing resume format..."):
-            suggestions = self.client.generate_content(prompt)
+        suggestions = self.client.generate_content(prompt)
         
         return suggestions
     
@@ -116,8 +107,7 @@ class ResumeAnalyzer:
         Format as JSON-like structure for easy parsing.
         """
         
-        with st.spinner("📊 Calculating match score..."):
-            score_analysis = self.client.generate_content(prompt)
+        score_analysis = self.client.generate_content(prompt)
         
         return score_analysis
     
@@ -152,8 +142,7 @@ class ResumeAnalyzer:
         For each item, explain why it's important and how to implement it.
         """
         
-        with st.spinner("📋 Creating improvement action plan..."):
-            action_plan = self.client.generate_content(prompt)
+        action_plan = self.client.generate_content(prompt)
         
         return action_plan
 

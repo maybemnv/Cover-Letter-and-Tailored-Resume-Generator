@@ -15,27 +15,20 @@ class CoverLetterGenerator:
         # Validate inputs
         is_valid, error_message = validate_inputs(resume, job_description)
         if not is_valid:
-            st.error(error_message)
-            return None
+            raise ValueError(error_message)
         
         # Prepare additional info
         if additional_info is None:
             additional_info = {}
         
         # Generate cover letter
-        with st.spinner("🔥 Generating your tailored cover letter..."):
-            cover_letter = self.client.generate_cover_letter(
-                resume=resume,
-                job_description=job_description,
-                additional_info=additional_info
-            )
+        cover_letter = self.client.generate_cover_letter(
+            resume=resume,
+            job_description=job_description,
+            additional_info=additional_info
+        )
         
-        if cover_letter:
-            st.success("✅ Cover letter generated successfully!")
-            return cover_letter
-        else:
-            st.error("❌ Failed to generate cover letter. Please try again.")
-            return None
+        return cover_letter
     
     def get_quick_improvements(self, resume: str, job_description: str) -> Optional[str]:
         from ..core.prompts import QUICK_TIPS_PROMPT
@@ -45,16 +38,14 @@ class CoverLetterGenerator:
             job_description=job_description
         )
         
-        with st.spinner("💡 Getting quick tips..."):
-            tips = self.client.generate_content(prompt)
+        tips = self.client.generate_content(prompt)
         
         return tips
     
     def extract_skills(self, resume: str) -> Optional[str]:
         from ..core.prompts import SKILLS_EXTRACTION_PROMPT
         prompt = SKILLS_EXTRACTION_PROMPT.format(resume=resume)
-        with st.spinner("🔍 Analyzing your skills..."):
-            skills = self.client.generate_content(prompt)
+        skills = self.client.generate_content(prompt)
         return skills
     def customize_for_company(self, base_cover_letter: str, 
                             company_info: str) -> Optional[str]:
@@ -76,8 +67,7 @@ class CoverLetterGenerator:
         
         Return the customized cover letter.
         """
-        with st.spinner("🏢 Customizing for company..."):
-            customized = self.client.generate_content(prompt)
+        customized = self.client.generate_content(prompt)
         return customized
 _generator = None
 def get_cover_letter_generator() -> CoverLetterGenerator:

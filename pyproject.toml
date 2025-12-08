@@ -1,0 +1,19 @@
+[project]
+name = "cover-letter-and-tailored-resume-generator"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "docx2txt>=0.8",
+    "google-generativeai>=0.2.0",
+    "pandas>=2.0.0",
+    "pdfkit>=1.0.0",
+    "pypandoc==1.11",
+    "pypdf>=3.12.0",
+    "pypdf2>=3.0.0",
+    "python-docx>=0.8.11",
+    "python-dotenv>=1.0.0",
+    "spacy>=3.6.0",
+    "streamlit>=1.24.0",
+]

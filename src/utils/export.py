@@ -12,7 +12,7 @@ from pathlib import Path
 import streamlit as st
 import subprocess
 
-def convert_to_pdf(content: str, output_path: str) -> str:
+def convert_text_to_pdf(content: str, output_path: str) -> str:
     """
     Convert content to PDF using pandoc.
     
@@ -195,7 +195,7 @@ def create_cover_letter_docx(content: str, output_path: str) -> str:
     doc.save(output_path)
     return output_path
 
-def convert_to_pdf(docx_path: str, pdf_path: str) -> bool:
+def convert_docx_to_pdf(docx_path: str, pdf_path: str) -> bool:
     """
     Convert DOCX to PDF using pdfkit.
     
@@ -295,7 +295,7 @@ def generate_exports(content: Dict[str, Any], base_filename: str, formats: List[
         if "PDF" in formats or "Both" in formats:
             pdf_path = temp_dir / f"{base_filename}.pdf"
             if "docx" in results:
-                convert_to_pdf(results["docx"], str(pdf_path))
+                convert_docx_to_pdf(results["docx"], str(pdf_path))
             results["pdf"] = str(pdf_path)
         
         return results
