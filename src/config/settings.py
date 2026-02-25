@@ -17,8 +17,8 @@ APP_CONFIG = {
 }
 
 # API Configuration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-2.5-flash"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = "moonshotai/kimi-k2-instruct-0905"
 
 # File Processing Configuration
 SUPPORTED_FILE_TYPES = {
