@@ -1,0 +1,144 @@
+%------------------------
+% Manav Kaushal's Optimized Resume
+% Targeting AI/ML + Backend Roles
+%------------------------
+\documentclass[letterpaper,11pt]{article}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\usepackage{ragged2e}
+\usepackage{tikz}
+\input{glyphtounicode}
+\usepackage{newpxtext}
+\linespread{1.15}
+\usepackage[T1]{fontenc}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.6in}
+\addtolength{\textheight}{1.2in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\setlength{\footskip}{4pt}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule\vspace{-6pt}]
+
+\pdfgentounicode=1
+
+\newcommand{\cvitem}[1]{
+  \item\small{{#1\vspace{-3pt}}}
+}
+\newcommand{\cvheading}[4]{
+  \vspace{-3pt}\item
+    \begin{tabular*}{\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \small#3 & \small #4 \\
+    \end{tabular*}\vspace{-8pt}
+}
+\newcommand{\cvheadingstart}{\begin{itemize}[leftmargin=0in, label={}]}
+\newcommand{\cvheadingend}{\end{itemize}}
+\newcommand{\cvitemstart}{\begin{itemize}[label=\textbullet]\justifying}
+\newcommand{\cvitemend}{\end{itemize}\vspace{-6pt}}
+
+\begin{document}
+
+\begin{center}
+  \textbf{\LARGE\scshape Manav Kaushal} \\
+  \vspace{1pt}\small
+  +91 9999482361 $\ \diamond\ $
+  \href{mailto:maybemnv@gmail.com}{maybemnv@gmail.com}
+  $\ \diamond\ $
+  \href{https://github.com/maybemnv}{github.com/maybemnv}
+  $\ \diamond\ $
+  \href{https://www.linkedin.com/in/maybmnv/}{linkedin.com/maybemnv}
+  $\ \diamond\ $
+  \href{https://portfolio-manavs-projects-1f5448b0.vercel.app/}{Portfolio} \\
+  \vspace{2pt}
+\end{center}
+
+\section{Education}
+\cvheadingstart
+  \cvheading
+    {Bachelor of Computer Applications (BCA) in Data Science}{2022 -- 2025}
+    {Jagannath Institute of Management and Science, Delhi}{CGPA: 8.2}
+  \cvheading
+    {Senior Secondary Education (Class XII)}{2022}
+    {Rajkiya Pratibha Vikas Vidyalaya (RPVV), Paschim Vihar, Delhi}{Percentage: 76.6\%}
+\cvheadingend
+
+\section{Experience}
+\cvheadingstart
+  \cvheading
+    {Gen AI Intern}{June 2025 -- November 2025}
+    {Global Village Foundation (GVF)}{}
+  \cvitemstart
+    \cvitem{Designed and deployed \textbf{Legaldocs}, a generative AI prototype integrating Gemini APIs with RAG using Cohere embeddings for scalable legal document analysis.}
+    \cvitem{Implemented backend APIs to support model inference, data processing, and system workflows..}
+  \cvitemend
+\cvheadingend
+
+\section{Projects}
+\cvheadingstart
+  \cvheading
+    {Synthex }{\href{https://github.com/maybemnv/Synthex}{GitHub}}
+    {\textbf{Tech Stack:} FastAPI, VS Code Extension API, Groq}{}
+  \cvitemstart
+    \cvitem{Built a VS Code extension that explains selected code in real time using AI, enabling in editor understanding of logic, flow, and best practices.}
+    \cvitem{Designed a backend inference pipeline using FastAPI for prompt orchestration, context injection, and low latency responses.}
+  \cvitemend
+
+  \cvheading
+    {Epidemiology AI -- Real-time Disease Outbreak Early Warning System}{\href{https://github.com/maybemnv/Epidemiology-AI}{GitHub}}
+    {\textbf{Tech Stack:} Pandas, Scikit-learn, PyTorch, React, Redis}{}
+  \cvitemstart
+    \cvitem{Developed an AI based early warning system by combining epidemiological data, climate variables, and proxy signals to predict disease outbreak risk.}
+    \cvitem{Designed time series features and anomaly detection logic to generate outbreak risk scores and trigger automated alerts.}
+  \cvitemend
+
+  \cvheading
+    {AI-Driven Patrolling and Bandobast Intelligence System}{\href{https://github.com/maybemnv/AI-Driven-Patrolling-and-Bandobast-Intelligence-System}{GitHub}}
+    {\textbf{Tech Stack:} YOLOv8, FastAPI, FAISS}{}
+  \cvitemstart
+    \cvitem{Built a computer vision based surveillance system to analyze video feeds for object placement, crowd density changes, and anomalous activities using YOLO and real time inference pipelines.}
+    \cvitem{Audited and processed high volume visual data to detect static objects, route blockages, and security anomalies with emphasis on accuracy, consistency, and low latency decision support.}
+  \cvitemend
+\cvheadingend
+
+\section{Technical Skills}
+\cvitemstart
+  \cvitem{\textbf{Languages:} Python, TypeScript, R}
+  \cvitem{\textbf{ML and Backend Frameworks:} FastAPI, Flask, Django, TensorFlow, PyTorch, LangChain, LangGraph, Streamlit, Scikit-learn, Pandas, NumPy}
+  \cvitem{\textbf{Cloud and DevOps:} Docker, AWS, GCP, Vercel, Render}
+  \cvitem{\textbf{Databases:} PostgreSQL, MySQL, MongoDB, Redis, SQLite}
+  \cvitem{\textbf{Tools:} Git, GitHub, GitHub Actions, Postman}
+  
+\cvitemend
+
+\section*{Certifications}
+\begin{itemize}[leftmargin=*, itemsep=-1pt]
+  \cvitem{RAG and LLM Fundamentals, NVIDIA Deep Learning Institute}
+  \cvitem{Introduction to Generative AI, Google Cloud Skills Boost}
+  \cvitem{Building ML excellence: A practical training guide for Amazon SageMaker AI}
+  \cvitem{Deep Learning with PyTorch, IBM}
+  \cvitem{Complete ML, NLP and Deployment Specialization, Udemy}
+\end{itemize}
+\end{document}
