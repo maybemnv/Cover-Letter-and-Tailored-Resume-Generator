@@ -5,20 +5,20 @@ import "./globals.css";
 const syne = Syne({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-syne",
+  variable: "--font-syne-var",
 });
 
 const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
-  variable: "--font-dm-mono",
+  variable: "--font-dm-mono-var",
 });
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
   style: ["normal", "italic"],
-  variable: "--font-instrument-serif",
+  variable: "--font-instrument-serif-var",
 });
 
 export const metadata: Metadata = {

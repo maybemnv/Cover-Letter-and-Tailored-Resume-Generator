@@ -3,7 +3,7 @@ import { getGroqClient, GROQ_MODEL, QUICK_TIPS_SYSTEM_PROMPT } from "@/lib/groq"
 
 export async function POST(req: NextRequest) {
   try {
-    const { resumeText, creativity } = await req.json();
+    const { resumeText, jdText, creativity } = await req.json();
     if (!resumeText) {
       return NextResponse.json({ error: "Missing resume text" }, { status: 400 });
     }
@@ -12,9 +12,15 @@ export async function POST(req: NextRequest) {
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL,
       temperature: creativity ?? 0.5,
+      max_tokens: 1024,
       messages: [
         { role: "system", content: QUICK_TIPS_SYSTEM_PROMPT },
-        { role: "user", content: `RESUME:\n${resumeText}` },
+        {
+          role: "user",
+          content: jdText
+            ? `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`
+            : `RESUME:\n${resumeText}`,
+        },
       ],
     });
 

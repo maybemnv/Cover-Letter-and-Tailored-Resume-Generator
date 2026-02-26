@@ -114,7 +114,7 @@ export default function ActionBar({ onValidationError }: { onValidationError?: (
         const res = await fetch("/api/quick-tips", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ resumeText, creativity }),
+          body: JSON.stringify({ resumeText, jdText, creativity }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);

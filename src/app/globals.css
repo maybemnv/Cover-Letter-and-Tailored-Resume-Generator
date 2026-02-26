@@ -13,9 +13,9 @@
   --color-text-muted: #78828f;
   --color-text-dim: #4b5563;
   
-  --font-syne: var(--font-syne), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-dm-mono), ui-monospace, SFMono-Regular, monospace;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, Cambria, serif;
+  --font-syne: var(--font-syne-var, 'Syne'), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-dm-mono-var, 'DM Mono'), ui-monospace, SFMono-Regular, monospace;
+  --font-serif: var(--font-instrument-serif-var, 'Instrument Serif'), ui-serif, Georgia, Cambria, serif;
 }
 
 *,

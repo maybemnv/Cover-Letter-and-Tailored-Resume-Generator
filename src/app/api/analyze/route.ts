@@ -9,18 +9,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const preliminary = calculateScores(resumeText, jdText);
-    const missingKeywords = getMissingKeywords(resumeText, jdText);
+    const [preliminary, missingKeywords] = await Promise.all([
+      Promise.resolve(calculateScores(resumeText, jdText)),
+      Promise.resolve(getMissingKeywords(resumeText, jdText)),
+    ]);
 
     const groq = getGroqClient();
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL,
       temperature: creativity ?? 0.3,
+      max_tokens: 2048,
       messages: [
         { role: "system", content: ANALYZE_SYSTEM_PROMPT },
         {
           role: "user",
-          content: `Preliminary NLP scores (use as context, not constraints): ${JSON.stringify(preliminary)}\n\nRESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`,
+          content: `Preliminary NLP context: ${JSON.stringify(preliminary)}\n\nRESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`,
         },
       ],
     });

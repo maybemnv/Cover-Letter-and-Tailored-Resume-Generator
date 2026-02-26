@@ -12,8 +12,15 @@ export interface MatchResult {
   skillsScore: number;
   experienceScore: number;
   keywordsScore: number;
+  strengths: string[];
+  gaps: string[];
   suggestions: Suggestion[];
   missingKeywords: string[];
+  atsIssues: string[];
+  actionPlan: {
+    quickWins: string[];
+    longTerm: string[];
+  };
 }
 
 export interface AppOutput {

@@ -31,10 +31,12 @@ export default function OutputPanel() {
     return [
       `Match Score: ${r.overallScore}%`,
       `Skills: ${r.skillsScore}% | Experience: ${r.experienceScore}% | Keywords: ${r.keywordsScore}%`,
-      "\nSuggestions:",
-      ...(r.suggestions ?? []).map((s) => `[${s.priority.toUpperCase()}] ${s.text}`),
-      "\nMissing Keywords:",
-      (r.missingKeywords ?? []).join(", "),
+      "\nStrengths:", ...(r.strengths ?? []).map((s) => `• ${s}`),
+      "\nGaps:", ...(r.gaps ?? []).map((g) => `• ${g}`),
+      "\nSuggestions:", ...(r.suggestions ?? []).map((s) => `[${s.priority.toUpperCase()}] ${s.text}`),
+      "\nMissing Keywords:", (r.missingKeywords ?? []).join(", "),
+      "\nATS Issues:", ...(r.atsIssues ?? []).map((a) => `• ${a}`),
+      "\nQuick Wins:", ...(r.actionPlan?.quickWins ?? []).map((w) => `• ${w}`),
     ].join("\n");
   };
 
@@ -78,7 +80,6 @@ export default function OutputPanel() {
         className="space-y-4"
       >
         <div className="glass-panel rounded-[2rem] p-6 sm:p-10 space-y-8 relative overflow-hidden">
-          {/* Subtle background glow based on output type */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#2a9d8f] opacity-[0.03] blur-[100px] rounded-full pointer-events-none" />
 
           {/* Header */}
@@ -89,7 +90,6 @@ export default function OutputPanel() {
                 : output.type === "latex" ? "LaTeX Resume"
                 : "Quick Tips"}
             </h2>
-
             <div className="flex gap-3">
               <button
                 onClick={handleCopy}
@@ -100,7 +100,7 @@ export default function OutputPanel() {
               {output.type !== "latex" && (
                 <button
                   onClick={handleExport}
-                  className="font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#1e2530] border border-[#1e2530] text-[#e9c46a] hover:bg-[#e9c46a] hover:text-[#030405] transition-all shadow-lg shadow-[#1e2530]/50"
+                  className="font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#1e2530] border border-[#1e2530] text-[#e9c46a] hover:bg-[#e9c46a] hover:text-[#030405] transition-all"
                 >
                   Export {exportFormat}
                 </button>
@@ -111,16 +111,16 @@ export default function OutputPanel() {
           {/* ── Analyze Mode ── */}
           {output.type === "analyze" && output.matchResult && (
             <div className="space-y-10">
+              {/* Score + bars */}
               <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
-                <div className="flex items-baseline gap-4 relative">
-                  <span className="font-syne text-8xl md:text-[8rem] font-extrabold text-[#2a9d8f] leading-none tracking-tighter drop-shadow-[0_0_32px_rgba(42,157,143,0.3)]">
+                <div className="flex items-baseline gap-4">
+                  <span className="font-syne text-7xl md:text-8xl font-extrabold text-[#2a9d8f] leading-none tracking-tighter drop-shadow-[0_0_32px_rgba(42,157,143,0.3)]">
                     {output.matchResult.overallScore}
                   </span>
                   <span className="font-mono text-[#78828f] text-sm uppercase font-bold tracking-widest">
                     / 100 <br/> Match
                   </span>
                 </div>
-
                 <div className="flex-1 space-y-5 pb-2">
                   {[
                     { label: "Skills",     value: output.matchResult.skillsScore,     color: "bg-[#2a9d8f]" },
@@ -133,48 +133,110 @@ export default function OutputPanel() {
                         <span className="text-[#f5f5f4]">{value}%</span>
                       </div>
                       <div className="h-2 rounded-full bg-[#1e2530] overflow-hidden shadow-inner">
-                        <div className={`h-full rounded-full bar-fill ${color} shadow-[0_0_10px_currentColor] opacity-90`} style={{ width: `${value}%` }} />
+                        <div className={`h-full rounded-full bar-fill ${color} opacity-90`} style={{ width: `${value}%` }} />
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
 
+              {/* Strengths + Gaps side by side */}
+              {(output.matchResult.strengths?.length > 0 || output.matchResult.gaps?.length > 0) && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {output.matchResult.strengths?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Strengths</p>
+                      {output.matchResult.strengths.map((s, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#2a9d8f]/15 bg-[#2a9d8f]/5">
+                          <span className="text-[#2a9d8f] mt-0.5">✓</span>
+                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{s}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {output.matchResult.gaps?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e76f51] uppercase">Gaps</p>
+                      {output.matchResult.gaps.map((g, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#e76f51]/15 bg-[#e76f51]/5">
+                          <span className="text-[#e76f51] mt-0.5">✗</span>
+                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{g}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Suggestions */}
               {output.matchResult.suggestions?.length > 0 && (
                 <div className="space-y-4">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">
-                    Critical Suggestions
-                  </p>
+                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Suggestions</p>
                   <div className="grid gap-3">
                     {output.matchResult.suggestions.map((s, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
                         className="flex items-start gap-4 p-5 rounded-2xl border border-[#1e2530] bg-[#12151a]/50 hover:bg-[#12151a] hover:border-[#2a9d8f]/40 transition-all group"
                       >
                         <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLOR[s.priority]}`} />
-                        <p className="font-syne text-[#f5f5f4] text-[15px] leading-relaxed group-hover:text-white transition-colors">
-                          {s.text}
-                        </p>
+                        <p className="font-syne text-[15px] text-[#f5f5f4] leading-relaxed group-hover:text-white transition-colors">{s.text}</p>
                       </motion.div>
                     ))}
                   </div>
                 </div>
               )}
 
+              {/* ATS Issues */}
+              {output.matchResult.atsIssues?.length > 0 && (
+                <div className="space-y-3">
+                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">ATS Issues</p>
+                  {output.matchResult.atsIssues.map((issue, i) => (
+                    <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#e9c46a]/15 bg-[#e9c46a]/5">
+                      <span className="text-[#e9c46a] mt-0.5">⚠</span>
+                      <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{issue}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Action Plan */}
+              {output.matchResult.actionPlan && (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {output.matchResult.actionPlan.quickWins?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Quick Wins</p>
+                      {output.matchResult.actionPlan.quickWins.map((w, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#1e2530] bg-[#12151a]/50">
+                          <span className="font-mono text-[#2a9d8f] font-bold text-sm">{i + 1}.</span>
+                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{w}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {output.matchResult.actionPlan.longTerm?.length > 0 && (
+                    <div className="space-y-3">
+                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">Long-Term</p>
+                      {output.matchResult.actionPlan.longTerm.map((l, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#1e2530] bg-[#12151a]/50">
+                          <span className="font-mono text-[#e9c46a] font-bold text-sm">{i + 1}.</span>
+                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{l}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Missing keywords */}
               {output.matchResult.missingKeywords?.length > 0 && (
                 <div className="space-y-4">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">
-                    Missing Keywords
-                  </p>
+                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Missing Keywords</p>
                   <div className="flex flex-wrap gap-2.5">
                     {output.matchResult.missingKeywords.map((kw) => (
-                      <span
-                        key={kw}
-                        className="font-mono text-xs px-3.5 py-1.5 rounded-lg bg-[#1e2530]/40 border border-[#1e2530] text-[#8a939e]"
-                      >
+                      <span key={kw} className="font-mono text-xs px-3.5 py-1.5 rounded-lg bg-[#1e2530]/40 border border-[#1e2530] text-[#8a939e]">
                         {kw}
                       </span>
                     ))}
@@ -199,15 +261,13 @@ export default function OutputPanel() {
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
                   className="flex items-start gap-5 p-6 rounded-2xl border border-[#1e2530] bg-[#12151a]/30 hover:bg-[#12151a] hover:border-[#e9c46a]/30 transition-all"
                 >
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e9c46a]/10 border border-[#e9c46a]/30 text-[#e9c46a] font-mono text-sm flex items-center justify-center font-bold shadow-[0_0_12px_rgba(233,196,106,0.15)]">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e9c46a]/10 border border-[#e9c46a]/30 text-[#e9c46a] font-mono text-sm flex items-center justify-center font-bold">
                     {i + 1}
                   </span>
-                  <p className="font-syne text-[#f5f5f4] text-[15px] md:text-base leading-relaxed mt-0.5">
-                    {tip}
-                  </p>
+                  <p className="font-syne text-[15px] text-[#f5f5f4] leading-relaxed mt-0.5">{tip}</p>
                 </motion.div>
               ))}
             </div>
@@ -240,17 +300,16 @@ export default function OutputPanel() {
                   {output.latexCode}
                 </SyntaxHighlighter>
               </div>
-
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleCopy}
-                  className="flex-1 py-4 rounded-xl border border-[#e9c46a]/40 text-[#e9c46a] font-syne font-bold tracking-wide hover:bg-[#e9c46a] hover:text-[#030405] transition-all shadow-lg"
+                  className="flex-1 py-4 rounded-xl border border-[#e9c46a]/40 text-[#e9c46a] font-syne font-bold tracking-wide hover:bg-[#e9c46a] hover:text-[#030405] transition-all"
                 >
                   {copied ? "✓ Copied to Clipboard" : "Copy to Overleaf"}
                 </button>
                 <button
                   onClick={downloadTex}
-                  className="flex-1 py-4 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/40 text-[#2a9d8f] font-syne font-bold tracking-wide hover:bg-[#2a9d8f] hover:text-[#030405] transition-all shadow-lg"
+                  className="flex-1 py-4 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/40 text-[#2a9d8f] font-syne font-bold tracking-wide hover:bg-[#2a9d8f] hover:text-[#030405] transition-all"
                 >
                   Download .tex
                 </button>
@@ -259,7 +318,6 @@ export default function OutputPanel() {
           )}
         </div>
 
-        {/* Chat refine panel */}
         <ChatPanel />
       </motion.div>
     </AnimatePresence>
