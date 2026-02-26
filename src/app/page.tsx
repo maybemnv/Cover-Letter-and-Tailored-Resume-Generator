@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Toaster } from "sonner";
 import { useAppStore } from "@/store/appStore";
 import Navbar from "@/components/Navbar";
@@ -11,11 +10,11 @@ import JDCard from "@/components/JDCard";
 import SettingsRow from "@/components/SettingsRow";
 import ActionBar from "@/components/ActionBar";
 import OutputPanel from "@/components/OutputPanel";
+import { useEffect } from "react";
 
 export default function Home() {
   const { mode, setBaseLatexTemplate } = useAppStore();
 
-  // Load LaTeX template once on mount
   useEffect(() => {
     fetch("/api/load-template")
       .then((r) => r.json())
@@ -30,58 +29,58 @@ export default function Home() {
     <>
       <Toaster
         theme="dark"
+        position="bottom-center"
         toastOptions={{
           style: {
-            background: "#0f1215",
+            background: "#0a0c10",
             border: "1px solid #1e2530",
-            color: "#eae8e3",
+            color: "#f5f5f4",
             fontFamily: "var(--font-dm-mono)",
             fontSize: "13px",
           },
         }}
       />
 
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen flex flex-col">
         <Navbar />
 
-        <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-          {/* Hero + ModeSwitcher */}
+        <main className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 flex-1">
           <Hero />
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-5"
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6 mt-4"
           >
-            {/* Input cards */}
-            <div className={`grid gap-5 ${showResume && showJD ? "md:grid-cols-2" : "grid-cols-1"}`}>
+            {/* Input Cards Area */}
+            <div className={`grid gap-6 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
               {showResume && (
-                <div className="rounded-2xl bg-[#0f1215] border border-[#1e2530] p-6">
+                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
                   <ResumeCard />
                 </div>
               )}
               {showJD && (
-                <div className="rounded-2xl bg-[#0f1215] border border-[#1e2530] p-6">
+                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
                   <JDCard />
                 </div>
               )}
-              {/* LaTeX mode: only JD */}
               {mode === "latex" && (
-                <div className="rounded-2xl bg-[#0f1215] border border-[#1e2530] p-6">
+                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
                   <JDCard />
                 </div>
               )}
             </div>
 
-            {/* Settings + CTA */}
-            <div className="rounded-2xl bg-[#0f1215] border border-[#1e2530] p-5 space-y-4">
+            {/* Central Control Unit */}
+            <div className="glass-panel p-6 sm:p-8 rounded-[2rem] space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#2a9d8f]/5 blur-3xl rounded-full pointer-events-none" />
               <SettingsRow />
-              <div className="h-px bg-[#1e2530]" />
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent" />
               <ActionBar />
             </div>
 
-            {/* Output */}
+            {/* AI Output Result */}
             <OutputPanel />
           </motion.div>
         </main>

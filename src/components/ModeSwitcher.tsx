@@ -14,21 +14,26 @@ export default function ModeSwitcher() {
   const { mode, setMode } = useAppStore();
 
   return (
-    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[#0f1215] border border-[#1e2530]">
-      {MODES.map((m) => (
-        <button
-          key={m.value}
-          onClick={() => setMode(m.value)}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
-            mode === m.value
-              ? "bg-[#2a9d8f] text-black shadow-[0_0_12px_rgba(42,157,143,0.3)]"
-              : "text-[#5a6470] hover:text-[#eae8e3] hover:bg-[#161b20]"
-          }`}
-          style={{ fontFamily: "var(--font-syne)" }}
-        >
-          {m.label}
-        </button>
-      ))}
+    <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0a0c10] border border-[#1e2530] shadow-inner mt-2">
+      {MODES.map((m) => {
+        const isActive = mode === m.value;
+        return (
+          <button
+            key={m.value}
+            onClick={() => setMode(m.value)}
+            className={`relative px-5 py-2.5 rounded-xl text-sm font-syne font-bold transition-all duration-300 whitespace-nowrap overflow-hidden ${
+              isActive
+                ? "text-black bg-[#2a9d8f] shadow-[0_0_20px_rgba(42,157,143,0.4)] scale-[1.02]"
+                : "text-[#78828f] hover:text-[#f5f5f4] hover:bg-[#12151a]"
+            }`}
+          >
+            <span className="relative z-10">{m.label}</span>
+            {isActive && (
+              <div className="absolute inset-0 bg-white/20 animate-pulse mix-blend-overlay pointer-events-none" />
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 }

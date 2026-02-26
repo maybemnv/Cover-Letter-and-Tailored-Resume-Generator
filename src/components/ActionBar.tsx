@@ -92,21 +92,36 @@ export default function ActionBar() {
   };
 
   return (
-    <button
-      onClick={handleRun}
-      disabled={loading}
-      className="w-full py-3.5 px-6 rounded-xl bg-[#2a9d8f] text-black font-bold text-sm tracking-wide transition-all duration-200 hover:shadow-[0_0_28px_rgba(42,157,143,0.4)] hover:-translate-y-0.5 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0 flex items-center justify-center gap-2"
-      style={{ fontFamily: "var(--font-syne)" }}
-    >
-      {loading ? (
-        <>
-          <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-          </svg>
-          Processing...
-        </>
-      ) : MODE_LABELS[mode]}
-    </button>
+    <div className="pt-2 pb-1">
+      <button
+        onClick={handleRun}
+        disabled={loading}
+        className="relative overflow-hidden w-full py-5 px-6 rounded-2xl bg-[#2a9d8f] text-[#030405] font-syne font-extrabold text-lg tracking-[0.05em] uppercase transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_40px_rgba(42,157,143,0.35)] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none flex items-center justify-center gap-3 group"
+      >
+        {/* Shine effect */}
+        <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+        
+        {loading ? (
+          <>
+            <svg className="animate-spin w-5 h-5 text-current opacity-70" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            Processing...
+          </>
+        ) : (
+          MODE_LABELS[mode]
+        )}
+      </button>
+
+      {/* Tailwind shimmer keyframes config is needed, but we can do a simple translation without custom config using left */}
+      <style jsx>{`
+        @keyframes shimmer {
+          100% {
+            transform: translateX(100%);
+          }
+        }
+      `}</style>
+    </div>
   );
 }

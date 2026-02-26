@@ -58,13 +58,13 @@ export default function TerminalCard() {
         <div className="w-2.5 h-2.5 rounded-full bg-[#e76f51]/60" />
         <div className="w-2.5 h-2.5 rounded-full bg-[#e9c46a]/60" />
         <div className="w-2.5 h-2.5 rounded-full bg-[#2a9d8f]/60" />
-        <span className="ml-3 text-[10px] text-[#5a6470]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+        <span className="ml-3 text-[10px] text-[#5a6470] font-mono">
           resume-ai ~ analyze
         </span>
       </div>
 
       {/* Terminal body */}
-      <div className="p-5 space-y-2" style={{ fontFamily: "var(--font-dm-mono)" }}>
+      <div className="p-5 space-y-2 font-mono">
         <AnimatePresence>
           {displayed.map((line, i) => (
             <motion.div
@@ -93,13 +93,10 @@ export default function TerminalCard() {
             animate={{ opacity: 1, scale: 1 }}
             className="mt-4 p-3 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/20"
           >
-            <span
-              className="text-4xl font-extrabold text-[#2a9d8f]"
-              style={{ fontFamily: "var(--font-syne)" }}
-            >
+            <span className="text-4xl font-extrabold text-[#2a9d8f] font-syne">
               84%
             </span>
-            <span className="text-xs text-[#5a6470] ml-2" style={{ fontFamily: "var(--font-dm-mono)" }}>
+            <span className="text-xs text-[#5a6470] ml-2 font-mono">
               match score
             </span>
           </motion.div>

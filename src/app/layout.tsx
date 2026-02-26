@@ -29,7 +29,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmMono.variable} ${instrumentSerif.variable}`}>
+    <html 
+      lang="en" 
+      className={`${syne.variable} ${dmMono.variable} ${instrumentSerif.variable} antialiased`}
+    >
       <body>{children}</body>
     </html>
   );

@@ -6,41 +6,36 @@ import TerminalCard from "./TerminalCard";
 
 export default function Hero() {
   return (
-    <section className="relative z-10 px-4 pt-10 pb-12 md:pt-14 md:pb-16">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-[55fr_45fr] gap-10 items-center">
+    <section className="relative z-10 px-4 pt-14 pb-16 md:pt-20 md:pb-24 overflow-hidden">
+      {/* Background glow for hero */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#2a9d8f] opacity-[0.04] blur-[120px] rounded-full pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto grid md:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-center">
         {/* Left — headline + subtitle + switcher */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="space-y-6"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-8 lg:pr-8"
         >
-          <div className="space-y-2">
-            <p
-              className="text-[11px] tracking-[0.22em] text-[#2a9d8f] uppercase"
-              style={{ fontFamily: "var(--font-dm-mono)" }}
-            >
-              AI Resume Intelligence
-            </p>
-            <h1
-              className="text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#eae8e3] leading-[1.12]"
-              style={{ fontFamily: "var(--font-syne)" }}
-            >
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#2a9d8f]/30 bg-[#2a9d8f]/5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#2a9d8f] animate-pulse" />
+              <p className="font-mono text-[10px] tracking-[0.25em] text-[#2a9d8f] uppercase font-bold">
+                AI Resume Intelligence
+              </p>
+            </div>
+            
+            <h1 className="font-syne text-[2.75rem] md:text-5xl lg:text-[4rem] font-extrabold text-[#f5f5f4] leading-[1.1] tracking-tight">
               Your resume,
               <br />
-              <em
-                className="not-italic text-[#e9c46a]"
-                style={{ fontFamily: "var(--font-instrument-serif)", fontStyle: "italic" }}
-              >
+              <em className="font-serif italic font-normal text-[#e9c46a] pr-2">
                 perfectly matched.
               </em>
             </h1>
           </div>
 
-          <p
-            className="text-[#5a6470] text-sm leading-[1.8] max-w-md"
-            style={{ fontFamily: "var(--font-dm-mono)" }}
-          >
+          <p className="font-mono text-[#78828f] text-[15px] leading-[1.8] max-w-lg">
             Paste your resume. Drop a JD. Get a match score, a tailored cover
             letter, and an Overleaf-ready LaTeX file in seconds.
           </p>
@@ -50,11 +45,16 @@ export default function Hero() {
 
         {/* Right — terminal card */}
         <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="relative"
         >
-          <TerminalCard />
+          {/* Decorative accents around terminal */}
+          <div className="absolute -inset-0.5 bg-gradient-to-tr from-[#2a9d8f]/30 to-[#e9c46a]/10 rounded-3xl blur opacity-30" />
+          <div className="relative glass-panel rounded-2xl p-1 shadow-2xl">
+            <TerminalCard />
+          </div>
         </motion.div>
       </div>
     </section>
