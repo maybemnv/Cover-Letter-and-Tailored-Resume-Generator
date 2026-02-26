@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGroqClient, GROQ_MODEL } from "@/lib/groq";
+import { getGroqClient, GROQ_MODEL, ANALYZE_SYSTEM_PROMPT } from "@/lib/groq";
 import { calculateScores, getMissingKeywords } from "@/lib/nlpUtils";
 
 export async function POST(req: NextRequest) {
@@ -12,27 +12,15 @@ export async function POST(req: NextRequest) {
     const preliminary = calculateScores(resumeText, jdText);
     const missingKeywords = getMissingKeywords(resumeText, jdText);
 
-    const systemPrompt = `You are an expert ATS and resume analyst. Analyze the resume against the job description.
-Return ONLY a valid JSON object — no markdown fences, no extra text — with exactly these fields:
-{
-  "overallScore": number (0-100),
-  "skillsScore": number (0-100),
-  "experienceScore": number (0-100),
-  "keywordsScore": number (0-100),
-  "suggestions": [{ "priority": "high"|"medium"|"low", "text": string }] (max 6 items),
-  "missingKeywords": string[] (max 10 items)
-}
-Preliminary NLP scores for context (use as hints, not limits): ${JSON.stringify(preliminary)}.`;
-
     const groq = getGroqClient();
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL,
-      temperature: creativity ?? 0.7,
+      temperature: creativity ?? 0.3,
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: ANALYZE_SYSTEM_PROMPT },
         {
           role: "user",
-          content: `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`,
+          content: `Preliminary NLP scores (use as context, not constraints): ${JSON.stringify(preliminary)}\n\nRESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`,
         },
       ],
     });

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGroqClient, GROQ_MODEL } from "@/lib/groq";
+import { getGroqClient, GROQ_MODEL, COVER_LETTER_SYSTEM_PROMPT } from "@/lib/groq";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,10 +13,7 @@ export async function POST(req: NextRequest) {
       model: GROQ_MODEL,
       temperature: creativity ?? 0.7,
       messages: [
-        {
-          role: "system",
-          content: `You are an expert career counselor and professional writer. Write a tailored, confident cover letter in exactly 3 paragraphs. Do NOT use placeholder brackets like [Company Name] or [Your Name]. Use natural confident prose. No generic phrases. End with a strong call to action.`,
-        },
+        { role: "system", content: COVER_LETTER_SYSTEM_PROMPT },
         {
           role: "user",
           content: `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}`,

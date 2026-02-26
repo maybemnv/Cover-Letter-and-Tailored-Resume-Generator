@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGroqClient, GROQ_MODEL } from "@/lib/groq";
+import { getGroqClient, GROQ_MODEL, QUICK_TIPS_SYSTEM_PROMPT } from "@/lib/groq";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,16 +11,10 @@ export async function POST(req: NextRequest) {
     const groq = getGroqClient();
     const completion = await groq.chat.completions.create({
       model: GROQ_MODEL,
-      temperature: creativity ?? 0.7,
+      temperature: creativity ?? 0.5,
       messages: [
-        {
-          role: "system",
-          content: `You are a professional resume coach. Return ONLY a valid JSON array of exactly 5 strings — no markdown, no extra text. Each string is a specific, actionable resume improvement tip under 60 words.`,
-        },
-        {
-          role: "user",
-          content: `RESUME:\n${resumeText}`,
-        },
+        { role: "system", content: QUICK_TIPS_SYSTEM_PROMPT },
+        { role: "user", content: `RESUME:\n${resumeText}` },
       ],
     });
 
