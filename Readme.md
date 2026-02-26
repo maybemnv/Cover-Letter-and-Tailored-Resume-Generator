@@ -109,9 +109,3 @@ src/
 ├── store/                # Immutable Zustand data layer
 └── types/                # End-to-end interface definitions
 ```
-
----
-
-<div align="center">
-  <i>Engineered with precision for the ambition-driven.</i>
-</div>
