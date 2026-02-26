@@ -34,10 +34,7 @@ export async function exportDocx(content: string): Promise<void> {
       })
   );
   const doc = new Document({ sections: [{ children: paragraphs }] });
-  const buffer = await Packer.toBuffer(doc);
-  const blob = new Blob([buffer], {
-    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  });
+  const blob = await Packer.toBlob(doc);
   download(blob, "export.docx");
 }
 

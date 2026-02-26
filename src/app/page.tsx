@@ -80,7 +80,7 @@ export default function Home() {
       <div className="relative min-h-screen flex flex-col">
         <Navbar />
 
-        <main className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-32 flex-1">
+        <main className="relative z-10 w-full px-4 sm:px-8 lg:px-16 xl:px-24 pb-32 flex-1">
           <Hero />
 
           <motion.div

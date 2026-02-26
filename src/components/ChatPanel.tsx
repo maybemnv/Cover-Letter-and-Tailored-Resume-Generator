@@ -105,7 +105,7 @@ export default function ChatPanel() {
                     <span className="text-3xl">🪄</span>
                     <p className="font-mono text-[#78828f] text-xs">
                       Tell me how to refine the output above... <br />
-                      e.g. "Shorter first paragraph", "Add Python to skills"
+                      e.g. &quot;Shorter first paragraph&quot;, &quot;Add Python to skills&quot;
                     </p>
                   </div>
                 )}
