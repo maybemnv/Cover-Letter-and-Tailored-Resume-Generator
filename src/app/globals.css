@@ -133,7 +133,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 .scanline {
   position: absolute;
-  inset-x: 0;
+  left: 0;
+  right: 0;
   height: 2px;
   background: linear-gradient(
     transparent,
