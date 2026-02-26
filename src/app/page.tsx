@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Toaster } from "sonner";
 import { useAppStore } from "@/store/appStore";
 import Navbar from "@/components/Navbar";
@@ -10,10 +11,42 @@ import JDCard from "@/components/JDCard";
 import SettingsRow from "@/components/SettingsRow";
 import ActionBar from "@/components/ActionBar";
 import OutputPanel from "@/components/OutputPanel";
-import { useEffect } from "react";
+
+// Fix #3 — step indicator
+function StepIndicator({ mode }: { mode: string }) {
+  const needsResume = mode !== "latex";
+  const needsJD = mode === "analyze" || mode === "cover-letter";
+
+  const steps = [
+    needsResume && { n: 1, label: "Paste Resume" },
+    (needsJD || mode === "latex") && { n: needsResume ? 2 : 1, label: mode === "latex" ? "Paste Job Description" : "Paste JD" },
+    { n: (needsResume ? 1 : 0) + (needsJD || mode === "latex" ? 1 : 0) + 1, label: mode === "analyze" ? "Analyze" : mode === "cover-letter" ? "Generate" : mode === "quick-tips" ? "Get Tips" : "Tailor" },
+  ].filter(Boolean) as { n: number; label: string }[];
+
+  return (
+    <div className="flex items-center justify-center gap-0 mb-8">
+      {steps.map((step, idx) => (
+        <div key={step.n} className="flex items-center">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-full bg-[#12151a] border border-[#2a9d8f]/50 text-[#2a9d8f] font-mono text-[11px] font-bold flex items-center justify-center">
+              {step.n}
+            </div>
+            <span className="font-mono text-[11px] font-bold text-[#78828f] uppercase tracking-widest whitespace-nowrap">
+              {step.label}
+            </span>
+          </div>
+          {idx < steps.length - 1 && (
+            <div className="w-10 md:w-16 h-px bg-[#1e2530] mx-3 shrink-0" />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   const { mode, setBaseLatexTemplate } = useAppStore();
+  const [validationError, setValidationError] = useState(false);
 
   useEffect(() => {
     fetch("/api/load-template")
@@ -21,6 +54,9 @@ export default function Home() {
       .then((d) => { if (d.latex) setBaseLatexTemplate(d.latex); })
       .catch(() => {});
   }, [setBaseLatexTemplate]);
+
+  // Clear validation error when user changes mode
+  useEffect(() => { setValidationError(false); }, [mode]);
 
   const showJD = mode === "analyze" || mode === "cover-letter";
   const showResume = mode !== "latex";
@@ -53,34 +89,36 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-6 mt-4"
           >
-            {/* Input Cards Area */}
+            {/* Fix #3 — step indicator */}
+            <StepIndicator mode={mode} />
+
+            {/* Input Cards */}
             <div className={`grid gap-6 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
               {showResume && (
                 <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
-                  <ResumeCard />
+                  <ResumeCard hasError={validationError} />
                 </div>
               )}
               {showJD && (
-                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
-                  <JDCard />
+                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
+                  <JDCard hasError={validationError} />
                 </div>
               )}
               {mode === "latex" && (
-                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
-                  <JDCard />
+                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
+                  <JDCard hasError={validationError} />
                 </div>
               )}
             </div>
 
-            {/* Central Control Unit */}
+            {/* Central control */}
             <div className="glass-panel p-6 sm:p-8 rounded-[2rem] space-y-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#2a9d8f]/5 blur-3xl rounded-full pointer-events-none" />
               <SettingsRow />
               <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent" />
-              <ActionBar />
+              <ActionBar onValidationError={() => setValidationError(true)} />
             </div>
 
-            {/* AI Output Result */}
             <OutputPanel />
           </motion.div>
         </main>
