@@ -2,3 +2,10 @@
 .devcontainer/
 venv/
 .env
+.env.local
+PY/
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.DS_Store
