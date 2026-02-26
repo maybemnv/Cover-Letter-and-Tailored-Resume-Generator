@@ -60,7 +60,6 @@ export default function ResumeCard({ hasError }: { hasError?: boolean }) {
         )}
       </div>
 
-      {/* Fix #8 — much taller, animated-dashed drop zone */}
       <div
         onDragEnter={() => setDragging(true)}
         onDragLeave={() => setDragging(false)}
@@ -75,7 +74,6 @@ export default function ResumeCard({ hasError }: { hasError?: boolean }) {
             : "bg-[#0a0c10] hover:bg-[#12151a]"
         } ${borderColor}`}
       >
-        {/* Animated corner accents on drag */}
         <AnimatePresence>
           {dragging && (
             <>
@@ -127,14 +125,12 @@ export default function ResumeCard({ hasError }: { hasError?: boolean }) {
         )}
       </div>
 
-      {/* Fix #6 — inline error */}
       {hasError && !resumeText && (
         <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs text-[#e76f51] flex items-center gap-1.5">
-          <span>⚠</span> Please add your resume before continuing.
+          <span>!</span> Please add your resume before continuing.
         </motion.p>
       )}
 
-      {/* Divider */}
       <div className="flex items-center gap-4">
         <div className="flex-1 h-px bg-[#1e2530]" />
         <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-[#4b5563]">or paste text</span>

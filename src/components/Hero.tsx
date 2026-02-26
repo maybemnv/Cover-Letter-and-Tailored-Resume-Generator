@@ -7,11 +7,11 @@ import TerminalCard from "./TerminalCard";
 export default function Hero() {
   return (
     <section className="relative z-10 pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden">
-      {/* Background glow */}
+
       <div className="absolute top-0 left-1/3 w-[500px] h-[250px] bg-[#2a9d8f] opacity-[0.04] blur-[120px] rounded-full pointer-events-none" />
 
       <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
-        {/* Left */}
+
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -42,7 +42,7 @@ export default function Hero() {
           <ModeSwitcher />
         </motion.div>
 
-        {/* Right */}
+
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}

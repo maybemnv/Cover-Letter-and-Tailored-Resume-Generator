@@ -2,19 +2,15 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { toast } from "sonner";
 import { useAppStore } from "@/store/appStore";
 import { exportDocx, exportPdf, exportTxt } from "@/lib/exporter";
-import type { Priority } from "@/types";
 import ChatPanel from "./ChatPanel";
 
-const PRIORITY_COLOR: Record<Priority, string> = {
-  high:   "bg-[#e76f51] shadow-[0_0_12px_rgba(231,111,81,0.6)]",
-  medium: "bg-[#e9c46a] shadow-[0_0_12px_rgba(233,196,106,0.5)]",
-  low:    "bg-[#2a9d8f] shadow-[0_0_12px_rgba(42,157,143,0.5)]",
-};
+import AnalyzeResult from "./output/AnalyzeResult";
+import CoverLetterResult from "./output/CoverLetterResult";
+import QuickTipsResult from "./output/QuickTipsResult";
+import LatexResult from "./output/LatexResult";
 
 export default function OutputPanel() {
   const { output, exportFormat } = useAppStore();
@@ -82,7 +78,7 @@ export default function OutputPanel() {
         <div className="glass-panel rounded-[2rem] p-6 sm:p-10 space-y-8 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#2a9d8f] opacity-[0.03] blur-[100px] rounded-full pointer-events-none" />
 
-          {/* Header */}
+
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1e2530] pb-6">
             <h2 className="font-mono text-xs font-bold tracking-[0.25em] text-[#78828f] uppercase">
               {output.type === "analyze" ? "Match Analysis"
@@ -91,12 +87,14 @@ export default function OutputPanel() {
                 : "Quick Tips"}
             </h2>
             <div className="flex gap-3">
-              <button
-                onClick={handleCopy}
-                className="font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#12151a] border border-[#1e2530] text-[#78828f] hover:text-[#f5f5f4] hover:border-[#2a9d8f]/50 transition-all hover:bg-[#2a9d8f]/5"
-              >
-                {copied ? "✓ Copied" : "Copy"}
-              </button>
+              {output.type !== "latex" && (
+                <button
+                  onClick={handleCopy}
+                  className="font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#12151a] border border-[#1e2530] text-[#78828f] hover:text-[#f5f5f4] hover:border-[#2a9d8f]/50 transition-all hover:bg-[#2a9d8f]/5"
+                >
+                  {copied ? "Copied" : "Copy"}
+                </button>
+              )}
               {output.type !== "latex" && (
                 <button
                   onClick={handleExport}
@@ -108,213 +106,12 @@ export default function OutputPanel() {
             </div>
           </div>
 
-          {/* ── Analyze Mode ── */}
-          {output.type === "analyze" && output.matchResult && (
-            <div className="space-y-10">
-              {/* Score + bars */}
-              <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
-                <div className="flex items-baseline gap-4">
-                  <span className="font-syne text-7xl md:text-8xl font-extrabold text-[#2a9d8f] leading-none tracking-tighter drop-shadow-[0_0_32px_rgba(42,157,143,0.3)]">
-                    {output.matchResult.overallScore}
-                  </span>
-                  <span className="font-mono text-[#78828f] text-sm uppercase font-bold tracking-widest">
-                    / 100 <br/> Match
-                  </span>
-                </div>
-                <div className="flex-1 space-y-5 pb-2">
-                  {[
-                    { label: "Skills",     value: output.matchResult.skillsScore,     color: "bg-[#2a9d8f]" },
-                    { label: "Experience", value: output.matchResult.experienceScore, color: "bg-[#e9c46a]" },
-                    { label: "Keywords",   value: output.matchResult.keywordsScore,   color: "bg-[#e76f51]" },
-                  ].map(({ label, value, color }) => (
-                    <div key={label} className="space-y-2">
-                      <div className="flex justify-between font-mono text-[11px] font-bold uppercase tracking-widest">
-                        <span className="text-[#78828f]">{label}</span>
-                        <span className="text-[#f5f5f4]">{value}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-[#1e2530] overflow-hidden shadow-inner">
-                        <div className={`h-full rounded-full bar-fill ${color} opacity-90`} style={{ width: `${value}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Strengths + Gaps side by side */}
-              {(output.matchResult.strengths?.length > 0 || output.matchResult.gaps?.length > 0) && (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {output.matchResult.strengths?.length > 0 && (
-                    <div className="space-y-3">
-                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Strengths</p>
-                      {output.matchResult.strengths.map((s, i) => (
-                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#2a9d8f]/15 bg-[#2a9d8f]/5">
-                          <span className="text-[#2a9d8f] mt-0.5">✓</span>
-                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{s}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {output.matchResult.gaps?.length > 0 && (
-                    <div className="space-y-3">
-                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e76f51] uppercase">Gaps</p>
-                      {output.matchResult.gaps.map((g, i) => (
-                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#e76f51]/15 bg-[#e76f51]/5">
-                          <span className="text-[#e76f51] mt-0.5">✗</span>
-                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{g}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Suggestions */}
-              {output.matchResult.suggestions?.length > 0 && (
-                <div className="space-y-4">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Suggestions</p>
-                  <div className="grid gap-3">
-                    {output.matchResult.suggestions.map((s, i) => (
-                      <motion.div
-                        key={i}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                        className="flex items-start gap-4 p-5 rounded-2xl border border-[#1e2530] bg-[#12151a]/50 hover:bg-[#12151a] hover:border-[#2a9d8f]/40 transition-all group"
-                      >
-                        <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLOR[s.priority]}`} />
-                        <p className="font-syne text-[15px] text-[#f5f5f4] leading-relaxed group-hover:text-white transition-colors">{s.text}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ATS Issues */}
-              {output.matchResult.atsIssues?.length > 0 && (
-                <div className="space-y-3">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">ATS Issues</p>
-                  {output.matchResult.atsIssues.map((issue, i) => (
-                    <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#e9c46a]/15 bg-[#e9c46a]/5">
-                      <span className="text-[#e9c46a] mt-0.5">⚠</span>
-                      <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{issue}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Action Plan */}
-              {output.matchResult.actionPlan && (
-                <div className="grid md:grid-cols-2 gap-6">
-                  {output.matchResult.actionPlan.quickWins?.length > 0 && (
-                    <div className="space-y-3">
-                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Quick Wins</p>
-                      {output.matchResult.actionPlan.quickWins.map((w, i) => (
-                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#1e2530] bg-[#12151a]/50">
-                          <span className="font-mono text-[#2a9d8f] font-bold text-sm">{i + 1}.</span>
-                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{w}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {output.matchResult.actionPlan.longTerm?.length > 0 && (
-                    <div className="space-y-3">
-                      <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">Long-Term</p>
-                      {output.matchResult.actionPlan.longTerm.map((l, i) => (
-                        <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-[#1e2530] bg-[#12151a]/50">
-                          <span className="font-mono text-[#e9c46a] font-bold text-sm">{i + 1}.</span>
-                          <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{l}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Missing keywords */}
-              {output.matchResult.missingKeywords?.length > 0 && (
-                <div className="space-y-4">
-                  <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Missing Keywords</p>
-                  <div className="flex flex-wrap gap-2.5">
-                    {output.matchResult.missingKeywords.map((kw) => (
-                      <span key={kw} className="font-mono text-xs px-3.5 py-1.5 rounded-lg bg-[#1e2530]/40 border border-[#1e2530] text-[#8a939e]">
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── Cover Letter Mode ── */}
-          {output.type === "cover-letter" && output.coverLetter && (
-            <div className="font-serif text-[#f5f5f4] text-lg leading-[2.2] whitespace-pre-wrap p-8 md:p-12 rounded-[2rem] bg-[#12151a]/30 border border-[#1e2530] shadow-inner selection:bg-[#2a9d8f]/30">
-              {output.coverLetter}
-            </div>
-          )}
-
-          {/* ── Quick Tips Mode ── */}
-          {output.type === "quick-tips" && output.tips && (
-            <div className="space-y-4">
-              {output.tips.map((tip, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className="flex items-start gap-5 p-6 rounded-2xl border border-[#1e2530] bg-[#12151a]/30 hover:bg-[#12151a] hover:border-[#e9c46a]/30 transition-all"
-                >
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#e9c46a]/10 border border-[#e9c46a]/30 text-[#e9c46a] font-mono text-sm flex items-center justify-center font-bold">
-                    {i + 1}
-                  </span>
-                  <p className="font-syne text-[15px] text-[#f5f5f4] leading-relaxed mt-0.5">{tip}</p>
-                </motion.div>
-              ))}
-            </div>
-          )}
-
-          {/* ── LaTeX Mode ── */}
+          {output.type === "analyze" && output.matchResult && <AnalyzeResult matchResult={output.matchResult} />}
+          {output.type === "cover-letter" && output.coverLetter && <CoverLetterResult coverLetter={output.coverLetter} />}
+          {output.type === "quick-tips" && output.tips && <QuickTipsResult tips={output.tips} />}
           {output.type === "latex" && output.latexCode && (
-            <div className="space-y-6">
-              <div className="rounded-2xl overflow-hidden border border-[#1e2530] shadow-2xl relative">
-                <div className="absolute top-0 right-0 p-3 flex gap-2 z-10">
-                  <div className="w-3 h-3 rounded-full bg-[#1e2530]" />
-                  <div className="w-3 h-3 rounded-full bg-[#1e2530]" />
-                  <div className="w-3 h-3 rounded-full bg-[#1e2530]" />
-                </div>
-                <SyntaxHighlighter
-                  language="latex"
-                  style={atomDark}
-                  customStyle={{
-                    background: "#080a0c",
-                    margin: 0,
-                    padding: "2rem",
-                    maxHeight: "600px",
-                    fontFamily: "var(--font-dm-mono)",
-                    fontSize: "13px",
-                    lineHeight: "1.8",
-                  }}
-                  showLineNumbers
-                  lineNumberStyle={{ color: "#2a3540", fontSize: "12px", minWidth: "3em" }}
-                >
-                  {output.latexCode}
-                </SyntaxHighlighter>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={handleCopy}
-                  className="flex-1 py-4 rounded-xl border border-[#e9c46a]/40 text-[#e9c46a] font-syne font-bold tracking-wide hover:bg-[#e9c46a] hover:text-[#030405] transition-all"
-                >
-                  {copied ? "✓ Copied to Clipboard" : "Copy to Overleaf"}
-                </button>
-                <button
-                  onClick={downloadTex}
-                  className="flex-1 py-4 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/40 text-[#2a9d8f] font-syne font-bold tracking-wide hover:bg-[#2a9d8f] hover:text-[#030405] transition-all"
-                >
-                  Download .tex
-                </button>
-              </div>
-            </div>
+            <LatexResult latexCode={output.latexCode} copied={copied} onCopy={handleCopy} onDownload={downloadTex} />
           )}
         </div>
 

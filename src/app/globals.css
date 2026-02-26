@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #030405; /* Even darker, pure premium dark */
+  --color-bg: #030405;
   --color-surface: #0a0c10;
   --color-surface2: #12151a;
   --color-border: #1e2530;
@@ -42,7 +42,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle glassmorphism utilities */
+
 .glass-panel {
   background: rgba(10, 12, 16, 0.6);
   backdrop-filter: blur(12px);
@@ -51,7 +51,7 @@ body {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Outer glow utility for buttons */
+
 .glow-accent {
   box-shadow: 0 0 24px -4px rgba(42, 157, 143, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
@@ -59,7 +59,7 @@ body {
   box-shadow: 0 0 32px 0px rgba(42, 157, 143, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Grid overlay */
+
 body::before {
   content: "";
   position: fixed;
@@ -73,7 +73,7 @@ body::before {
   z-index: 0;
 }
 
-/* Noise texture overlay */
+
 body::after {
   content: "";
   position: fixed;
@@ -83,13 +83,13 @@ body::after {
   z-index: 1;
 }
 
-/* Scrollbar */
+
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
 
-/* Custom range slider */
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;

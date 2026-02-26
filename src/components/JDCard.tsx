@@ -15,10 +15,9 @@ export default function JDCard({ hasError }: { hasError?: boolean }) {
         <span className="font-mono text-[10px] text-[#4b5563]">Raw text only</span>
       </div>
 
-      {/* Fix #6 — validation error for JD */}
       {hasError && !jdText && (
         <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="font-mono text-xs text-[#e76f51] flex items-center gap-1.5">
-          <span>⚠</span> Please paste a job description before continuing.
+          <span>!</span> Please paste a job description before continuing.
         </motion.p>
       )}
 

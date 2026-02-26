@@ -52,7 +52,7 @@ export default function TerminalCard() {
     <div className="relative rounded-2xl bg-[#0a0c10] border border-[#1e2530] overflow-hidden h-[300px] md:h-[340px]">
       <div className="scanline" />
 
-      {/* macOS window bar */}
+
       <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[#1e2530] bg-[#0f1215]">
         <div className="w-3 h-3 rounded-full bg-[#e76f51]/70 hover:bg-[#e76f51] transition-colors" />
         <div className="w-3 h-3 rounded-full bg-[#e9c46a]/70 hover:bg-[#e9c46a] transition-colors" />
@@ -60,13 +60,13 @@ export default function TerminalCard() {
         <span className="ml-3 text-[10px] text-[#4b5563] font-mono tracking-widest">
           resume-ai ~ analyze
         </span>
-        {/* Fix #1 — clear example label */}
+
         <span className="ml-auto text-[9px] font-mono font-bold tracking-widest text-[#4b5563] uppercase border border-[#1e2530] px-2 py-0.5 rounded">
           example output
         </span>
       </div>
 
-      {/* Terminal body */}
+
       <div className="p-5 space-y-2 font-mono">
         <AnimatePresence>
           {displayed.map((line, i) => (
@@ -82,14 +82,14 @@ export default function TerminalCard() {
           ))}
         </AnimatePresence>
 
-        {/* Active typing line */}
+
         <div className={`text-sm flex items-center gap-0.5 ${current.color}`}>
           <span className="text-[#3a4450] mr-2">$</span>
           <span>{currentText}</span>
           <span className="cursor-blink ml-0.5 w-[2px] h-4 bg-current" />
         </div>
 
-        {/* Score widget — only shown after Score line is in displayed */}
+
         {displayed.includes("Score: 84% ↑") && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}

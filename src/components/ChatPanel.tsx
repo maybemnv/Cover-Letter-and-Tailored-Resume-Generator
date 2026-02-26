@@ -74,7 +74,7 @@ export default function ChatPanel() {
 
   return (
     <div className="mt-6 flex flex-col items-center max-w-2xl mx-auto">
-      {/* Toggle */}
+
       <button
         onClick={() => setChatOpen(!chatOpen)}
         className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#12151a]/80 border border-[#1e2530] hover:border-[#2a9d8f]/50 hover:bg-[#12151a] shadow-lg transition-all"
@@ -98,11 +98,9 @@ export default function ChatPanel() {
             className="w-full mt-4"
           >
             <div className="glass-panel w-full rounded-[2rem] border border-[#1e2530] overflow-hidden shadow-2xl">
-              {/* Messages */}
               <div className="h-64 overflow-y-auto p-5 space-y-4">
                 {chatHistory.length === 0 && (
                   <div className="flex flex-col items-center justify-center h-full text-center space-y-3 opacity-60">
-                    <span className="text-3xl">🪄</span>
                     <p className="font-mono text-[#78828f] text-xs">
                       Tell me how to refine the output above... <br />
                       e.g. &quot;Shorter first paragraph&quot;, &quot;Add Python to skills&quot;
@@ -132,7 +130,7 @@ export default function ChatPanel() {
                 <div ref={bottomRef} className="h-1" />
               </div>
 
-              {/* Input */}
+
               <div className="border-t border-[#1e2530] p-3 bg-[#0a0c10]/50">
                 <div className="flex items-end gap-2 bg-[#12151a] rounded-xl border border-[#1e2530] p-1.5 focus-within:border-[#2a9d8f]/50 focus-within:ring-1 focus-within:ring-[#2a9d8f]/30 transition-all">
                   <textarea

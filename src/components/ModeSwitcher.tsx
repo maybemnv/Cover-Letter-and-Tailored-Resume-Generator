@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAppStore } from "@/store/appStore";
 import type { Mode } from "@/types";
 
-// Fix #7 — tabs: which are fully functional vs "coming soon"
+
 const MODES: { value: Mode; label: string; ready: boolean }[] = [
   { value: "analyze",       label: "Analyze Match",  ready: true },
   { value: "cover-letter",  label: "Cover Letter",   ready: true },
