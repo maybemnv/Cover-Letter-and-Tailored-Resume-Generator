@@ -136,9 +136,11 @@ export default function ActionBar({ onValidationError }: ActionBarProps) {
         </button>
       </div>
 
-      <p className="mt-3 text-center font-mono text-[10px] text-[#4b5563]">
-        Press <kbd className="px-1.5 py-0.5 rounded bg-[#12151a] border border-[#1e2530] text-[#78828f]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-[#12151a] border border-[#1e2530] text-[#78828f]">Enter</kbd> to run
-      </p>
+      <div className="mt-3 flex items-center justify-center gap-2">
+        <span className="font-mono text-[10px] text-[#4b5563]">
+          Press <kbd className="px-1.5 py-0.5 rounded bg-[#12151a] border border-[#1e2530] text-[#78828f]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 rounded bg-[#12151a] border border-[#1e2530] text-[#78828f]">Enter</kbd> to run
+        </span>
+      </div>
     </div>
   );
 }

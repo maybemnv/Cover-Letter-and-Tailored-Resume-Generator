@@ -14,7 +14,7 @@ import OutputPanel from "@/components/OutputPanel";
 import StepIndicator from "@/components/StepIndicator";
 
 export default function Home() {
-  const { mode, setBaseLatexTemplate } = useAppStore();
+  const { mode, setBaseLatexTemplate, status } = useAppStore();
   const [validationError, setValidationError] = useState(false);
 
   useEffect(() => {
@@ -48,42 +48,58 @@ export default function Home() {
       <div className="relative min-h-screen flex flex-col">
         <Navbar />
 
-        <main className="relative z-10 w-full px-3 sm:px-6 lg:px-12 xl:px-16 pb-24 flex-1">
-          <Hero />
+        {/* Hero Section */}
+        <Hero />
 
+        {/* Divider between hero and form */}
+        <div className="relative z-10 w-full px-3 sm:px-6 lg:px-12 xl:px-16">
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent mb-8" />
+        </div>
+
+        {/* Form Section */}
+        <main className="relative z-10 w-full px-3 sm:px-6 lg:px-12 xl:px-16 pb-24 flex-1">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-5 mt-2"
+            className="space-y-6"
           >
+            {/* Step Indicator - Full width at top of form section */}
             <StepIndicator mode={mode} />
 
-            <div className={`grid gap-5 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
+            {/* Input Cards */}
+            <div className={`grid gap-6 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
               {showResume && (
-                <div className="glass-panel p-5 sm:p-6 rounded-[2rem]">
+                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
                   <ResumeCard hasError={validationError} />
                 </div>
               )}
               {showJD && (
-                <div className={`glass-panel p-5 sm:p-6 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
+                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
                   <JDCard hasError={validationError} />
                 </div>
               )}
               {mode === "latex" && (
-                <div className={`glass-panel p-5 sm:p-6 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
+                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
                   <JDCard hasError={validationError} />
                 </div>
               )}
             </div>
 
-            <div className="glass-panel p-5 sm:p-6 rounded-[2rem] space-y-5 relative overflow-hidden">
+            {/* Action Section with Settings and Button */}
+            <div className="glass-panel p-6 sm:p-8 rounded-[2rem] space-y-6 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#2a9d8f]/5 blur-3xl rounded-full pointer-events-none" />
+              
+              {/* Settings Row */}
               <SettingsRow />
+              
               <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent" />
+              
+              {/* Action Button */}
               <ActionBar onValidationError={() => setValidationError(true)} />
             </div>
 
+            {/* Output Panel */}
             <OutputPanel />
           </motion.div>
         </main>

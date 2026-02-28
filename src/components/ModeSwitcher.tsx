@@ -27,7 +27,7 @@ const MODES: { value: Mode; label: string; icon: string; description: string }[]
   { 
     value: "latex", 
     label: "LaTeX", 
-    icon: "∑",
+    icon: "⌘",
     description: "Create an ATS-optimized LaTeX resume"
   },
 ];
