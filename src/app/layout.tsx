@@ -1,24 +1,16 @@
 import type { Metadata } from "next";
-import { Syne, DM_Mono, Instrument_Serif } from "next/font/google";
+import { Inter, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-syne-var",
+  variable: "--font-inter-var",
 });
 
 const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-dm-mono-var",
-});
-
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument-serif-var",
 });
 
 export const metadata: Metadata = {
@@ -29,9 +21,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html 
-      lang="en" 
-      className={`${syne.variable} ${dmMono.variable} ${instrumentSerif.variable} antialiased`}
+    <html
+      lang="en"
+      className={`${inter.variable} ${dmMono.variable} antialiased`}
     >
       <body>{children}</body>
     </html>

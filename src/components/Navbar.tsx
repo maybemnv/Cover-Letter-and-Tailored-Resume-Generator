@@ -6,31 +6,42 @@ export default function Navbar() {
   const loading = useAppStore((s) => s.loading);
 
   return (
-    <nav className="relative z-50 w-full flex items-center justify-between px-4 sm:px-8 lg:px-16 xl:px-24 py-4 border-b border-[#1e2530] bg-[#030405]/90 backdrop-blur-md">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-3">
-          <div className="relative flex items-center justify-center w-4 h-4">
-            <span className="absolute w-2.5 h-2.5 rounded-full bg-[#2a9d8f]" />
-            <span className="absolute w-2.5 h-2.5 rounded-full bg-[#2a9d8f] pulse-dot" />
-          </div>
-          <span className="font-syne text-[#f5f5f4] text-xl font-extrabold tracking-tight">
-            Resume<span className="text-[#2a9d8f]">AI</span>
-          </span>
+    <nav className="relative z-50 w-full flex items-center justify-between px-6 lg:px-16 xl:px-24 py-4 border-b border-[rgba(255,255,255,0.06)] bg-[#05070f]/80 backdrop-blur-xl">
+      <div className="flex items-center gap-3">
+        <div className="relative flex items-center justify-center w-3 h-3">
+          <span className="absolute w-2 h-2 rounded-full bg-[#00c8b4]" />
+          <span className="absolute w-2 h-2 rounded-full bg-[#00c8b4] pulse-dot" />
         </div>
-        <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-[#e9c46a] border border-[#e9c46a]/30 bg-[#e9c46a]/5 rounded px-2 py-0.5">
+        <span className="text-[#f5f5f4] text-base font-semibold tracking-tight">
+          Resume<span className="text-[#00c8b4]">AI</span>
+        </span>
+        <span className="font-mono text-[9px] font-bold tracking-[0.18em] text-[#a1a1aa] border border-[rgba(255,255,255,0.1)] rounded px-1.5 py-0.5 ml-1">
           BETA
         </span>
       </div>
 
-      {loading && (
-        <div className="flex items-center gap-2 font-mono text-[#78828f] text-xs font-medium bg-[#12151a] px-3 py-1.5 rounded-full border border-[#1e2530]">
-          <svg className="animate-spin w-3.5 h-3.5 text-[#2a9d8f]" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      <div className="flex items-center gap-4">
+        {loading && (
+          <div className="flex items-center gap-2 font-mono text-[#a1a1aa] text-[11px] uppercase tracking-widest font-medium">
+            <svg className="animate-spin w-3 h-3 text-[#00c8b4]" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+            </svg>
+            processing
+          </div>
+        )}
+        <a
+          href="https://github.com/maybemnv/Cover-Letter-and-Tailored-Resume-Generator"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#6b7280] hover:text-[#f5f5f4] transition-colors"
+          aria-label="GitHub"
+        >
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
           </svg>
-          processing
-        </div>
-      )}
+        </a>
+      </div>
     </nav>
   );
 }

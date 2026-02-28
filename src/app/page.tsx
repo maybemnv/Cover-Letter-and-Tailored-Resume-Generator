@@ -14,7 +14,7 @@ import OutputPanel from "@/components/OutputPanel";
 import StepIndicator from "@/components/StepIndicator";
 
 export default function Home() {
-  const { mode, setBaseLatexTemplate, status } = useAppStore();
+  const { mode, setBaseLatexTemplate } = useAppStore();
   const [validationError, setValidationError] = useState(false);
 
   useEffect(() => {
@@ -36,8 +36,9 @@ export default function Home() {
         position="bottom-center"
         toastOptions={{
           style: {
-            background: "#0a0c10",
-            border: "1px solid #1e2530",
+            background: "rgba(255,255,255,0.03)",
+            backdropFilter: "blur(12px)",
+            border: "1px solid rgba(255,255,255,0.08)",
             color: "#f5f5f4",
             fontFamily: "var(--font-dm-mono-var, 'DM Mono')",
             fontSize: "13px",
@@ -49,58 +50,45 @@ export default function Home() {
         <Navbar />
 
         {/* Hero Section */}
-        <Hero />
-
-        {/* Divider between hero and form */}
-        <div className="relative z-10 w-full px-3 sm:px-6 lg:px-12 xl:px-16">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent mb-8" />
+        <div className="px-6 lg:px-16 xl:px-24">
+          <Hero />
         </div>
 
         {/* Form Section */}
-        <main className="relative z-10 w-full px-3 sm:px-6 lg:px-12 xl:px-16 pb-24 flex-1">
+        <main id="form-section" className="relative z-10 w-full px-6 lg:px-16 xl:px-24 pb-32 flex-1 pt-12 md:pt-16">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-8 max-w-6xl mx-auto"
           >
-            {/* Step Indicator - Full width at top of form section */}
-            <StepIndicator mode={mode} />
+            <div className="flex justify-center -mb-2">
+              <StepIndicator mode={mode} />
+            </div>
 
-            {/* Input Cards */}
             <div className={`grid gap-6 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
               {showResume && (
-                <div className="glass-panel p-6 sm:p-8 rounded-[2rem]">
+                <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError && !showResume ? "ring-1 ring-[#e76f51]/50" : ""}`}>
                   <ResumeCard hasError={validationError} />
                 </div>
               )}
-              {showJD && (
-                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
-                  <JDCard hasError={validationError} />
-                </div>
-              )}
-              {mode === "latex" && (
-                <div className={`glass-panel p-6 sm:p-8 rounded-[2rem] ${validationError ? "ring-1 ring-[#e76f51]/30" : ""}`}>
+              {(showJD || mode === "latex") && (
+                <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError ? "ring-1 ring-[#e76f51]/50" : ""}`}>
                   <JDCard hasError={validationError} />
                 </div>
               )}
             </div>
 
-            {/* Action Section with Settings and Button */}
-            <div className="glass-panel p-6 sm:p-8 rounded-[2rem] space-y-6 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#2a9d8f]/5 blur-3xl rounded-full pointer-events-none" />
-              
-              {/* Settings Row */}
+            <div className="glass-card rounded-[24px] p-6 lg:p-8 space-y-6">
               <SettingsRow />
-              
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-[#1e2530] to-transparent" />
-              
-              {/* Action Button */}
+              <div className="h-px w-full bg-[rgba(255,255,255,0.06)]" />
               <ActionBar onValidationError={() => setValidationError(true)} />
             </div>
 
-            {/* Output Panel */}
-            <OutputPanel />
+            <div className="pt-4">
+              <OutputPanel />
+            </div>
           </motion.div>
         </main>
       </div>

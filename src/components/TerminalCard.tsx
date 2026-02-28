@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const SEQUENCE = [
-  { text: "Parsing resume...",     color: "text-[#2a9d8f]" },
-  { text: "Extracting keywords...",color: "text-[#2a9d8f]" },
-  { text: "Matching against JD...",color: "text-[#2a9d8f]" },
-  { text: "Running ATS check...",  color: "text-[#2a9d8f]" },
+  { text: "Parsing resume...",     color: "text-[#00c8b4]" },
+  { text: "Extracting keywords...",color: "text-[#00c8b4]" },
+  { text: "Matching against JD...",color: "text-[#00c8b4]" },
+  { text: "Running ATS check...",  color: "text-[#00c8b4]" },
   { text: "Score: 84% ↑",          color: "text-[#e9c46a]" },
 ];
 
@@ -21,10 +21,10 @@ export default function TerminalCard() {
     if (phase === "typing") {
       const target = SEQUENCE[currentLine].text;
       if (charIndex < target.length) {
-        const t = setTimeout(() => setCharIndex((c) => c + 1), 38);
+        const t = setTimeout(() => setCharIndex((c) => c + 1), 30);
         return () => clearTimeout(t);
       } else {
-        const t = setTimeout(() => setPhase("pause"), 700);
+        const t = setTimeout(() => setPhase("pause"), 600);
         return () => clearTimeout(t);
       }
     } else {
@@ -40,7 +40,7 @@ export default function TerminalCard() {
         }
         setCharIndex(0);
         setPhase("typing");
-      }, isReset ? 2500 : 400);
+      }, isReset ? 2000 : 300);
       return () => clearTimeout(t);
     }
   }, [phase, charIndex, currentLine]);
@@ -49,56 +49,54 @@ export default function TerminalCard() {
   const currentText = current.text.slice(0, charIndex);
 
   return (
-    <div className="relative rounded-3xl bg-[#0a0c10] border border-[#1e2530] overflow-hidden shadow-[0_0_40px_rgba(42,157,143,0.08)]">
-      <div className="scanline" />
+    <div className="glass-card rounded-[24px] overflow-hidden shadow-[0_0_40px_rgba(0,200,180,0.1)] relative text-left">
+      {/* Glossy top highlight */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
       {/* Terminal Header */}
-      <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[#1e2530] bg-[#0f1215]">
-        <div className="w-2.5 h-2.5 rounded-full bg-[#e76f51]/70 hover:bg-[#e76f51] transition-colors" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#e9c46a]/70 hover:bg-[#e9c46a] transition-colors" />
-        <div className="w-2.5 h-2.5 rounded-full bg-[#2a9d8f]/70 hover:bg-[#2a9d8f] transition-colors" />
-        <span className="ml-3 text-[9px] text-[#4b5563] font-mono tracking-widest">
+      <div className="flex items-center gap-1.5 px-5 py-4 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.01)]">
+        <div className="w-3 h-3 rounded-full bg-[#e76f51] shadow-[0_0_8px_#e76f51]" />
+        <div className="w-3 h-3 rounded-full bg-[#e9c46a] shadow-[0_0_8px_#e9c46a]" />
+        <div className="w-3 h-3 rounded-full bg-[#00c8b4] shadow-[0_0_8px_#00c8b4]" />
+        <span className="ml-4 text-[11px] text-[#6b7280] font-mono tracking-widest">
           resume-ai ~ analyze
-        </span>
-        <span className="ml-auto text-[8px] font-mono font-bold tracking-widest text-[#4b5563] uppercase border border-[#1e2530] px-2 py-0.5 rounded">
-          demo
         </span>
       </div>
 
       {/* Terminal Content */}
-      <div className="p-4 md:p-5 space-y-2 font-mono min-h-[220px] md:min-h-[260px]">
+      <div className="p-6 md:p-8 space-y-3 font-mono min-h-[240px]">
         <AnimatePresence>
           {displayed.map((line, i) => (
             <motion.div
               key={`${i}-${line}`}
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              className="text-[12px] md:text-sm text-[#2a9d8f]"
+              animate={{ opacity: 0.6 }}
+              className="text-[13px] md:text-sm text-[#00c8b4]"
             >
-              <span className="text-[#3a4450] mr-2">$</span>
+              <span className="text-[#374151] mr-3">$</span>
               {line}
             </motion.div>
           ))}
         </AnimatePresence>
 
         {/* Current typing line */}
-        <div className={`text-[12px] md:text-sm flex items-center gap-0.5 ${current.color}`}>
-          <span className="text-[#3a4450] mr-2">$</span>
+        <div className={`text-[13px] md:text-sm flex items-center gap-0.5 ${current.color}`}>
+          <span className="text-[#374151] mr-3">$</span>
           <span>{currentText}</span>
-          <span className="cursor-blink ml-0.5 w-[2px] h-4 bg-current" />
+          <span className="cursor-blink ml-1 w-[2px] h-4 bg-current" />
         </div>
 
         {/* Score result */}
         {displayed.includes("Score: 84% ↑") && (
           <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3 flex items-baseline gap-3 p-3 md:p-4 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/25"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-6 flex items-baseline gap-4 p-4 rounded-xl bg-[rgba(0,200,180,0.1)] border border-[rgba(0,200,180,0.2)]"
           >
-            <span className="font-syne text-4xl md:text-5xl font-extrabold text-[#2a9d8f] leading-none">84%</span>
-            <div className="space-y-0.5">
-              <p className="font-mono text-[10px] md:text-[11px] font-bold text-[#2a9d8f] leading-none">ATS MATCH</p>
-              <p className="font-mono text-[8px] md:text-[9px] text-[#4b5563] uppercase tracking-widest">Example output</p>
+            <span className="font-sans text-5xl font-extrabold text-[#00c8b4] tracking-tight">84%</span>
+            <div className="space-y-1">
+              <p className="font-mono text-[11px] font-bold text-[#00c8b4] tracking-widest uppercase">ATS MATCH</p>
+              <p className="font-mono text-[10px] text-[#00c8b4]/60 uppercase tracking-widest">Example output</p>
             </div>
           </motion.div>
         )}
