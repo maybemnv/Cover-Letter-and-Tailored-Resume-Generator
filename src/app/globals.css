@@ -12,7 +12,7 @@
   --color-text: #f5f5f4;
   --color-text-muted: #78828f;
   --color-text-dim: #4b5563;
-  
+
   --font-syne: var(--font-syne-var, 'Syne'), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-dm-mono-var, 'DM Mono'), ui-monospace, SFMono-Regular, monospace;
   --font-serif: var(--font-instrument-serif-var, 'Instrument Serif'), ui-serif, Georgia, Cambria, serif;
@@ -42,7 +42,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
+/* Glass panel with better mobile support */
 .glass-panel {
   background: rgba(10, 12, 16, 0.6);
   backdrop-filter: blur(12px);
@@ -51,7 +51,7 @@ body {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
-
+/* Glow effects */
 .glow-accent {
   box-shadow: 0 0 24px -4px rgba(42, 157, 143, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
 }
@@ -59,7 +59,7 @@ body {
   box-shadow: 0 0 32px 0px rgba(42, 157, 143, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
-
+/* Grid pattern overlay */
 body::before {
   content: "";
   position: fixed;
@@ -73,7 +73,7 @@ body::before {
   z-index: 0;
 }
 
-
+/* Noise texture */
 body::after {
   content: "";
   position: fixed;
@@ -83,35 +83,50 @@ body::after {
   z-index: 1;
 }
 
-
-::-webkit-scrollbar { width: 4px; }
+/* Custom scrollbar - improved for mobile */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+::-webkit-scrollbar-thumb { 
+  background: var(--color-border); 
+  border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: var(--color-accent); 
+}
 
-
+/* Range input styling */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 2px;
+  height: 3px;
   background: var(--color-border);
   border-radius: 2px;
   outline: none;
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--color-accent);
   cursor: pointer;
   box-shadow: 0 0 12px rgba(42,157,143,0.6);
   transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  -webkit-tap-highlight-color: transparent;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 0 20px rgba(42,157,143,0.9);
   transform: scale(1.1);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 12px rgba(42,157,143,0.6);
 }
 
 /* Bar fill animation */
@@ -122,7 +137,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   animation: barFill 1s cubic-bezier(0.16,1,0.3,1) forwards;
 }
 
-/* Pulse dot */
+/* Pulse dot animation */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.3; transform: scale(0.9); }
@@ -150,14 +165,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 .cursor-blink { animation: blink 1s step-end infinite; }
 
-/* Form Focus */
+/* Form Focus States - improved */
 textarea:focus, select:focus, input:focus {
   outline: none;
   border-color: var(--color-accent) !important;
-  box-shadow: 0 0 0 1px var(--color-accent), 0 0 12px rgba(42,157,143,0.1) !important;
+  box-shadow: 0 0 0 2px rgba(42, 157, 143, 0.2), 0 0 12px rgba(42,157,143,0.1) !important;
 }
 
-/* Utility to override Chrome autofill */
+/* Chrome autofill override */
 input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
@@ -169,4 +184,48 @@ select:-webkit-autofill {
 /* Typography base */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-syne);
+}
+
+/* Mobile-friendly touch targets */
+@media (max-width: 640px) {
+  button, 
+  input[type="range"]::-webkit-slider-thumb,
+  select,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(42, 157, 143, 0.3);
+  color: var(--color-text);
+}
+
+/* Smooth fade-in for content */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Loading shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, 
+    var(--color-surface) 0%, 
+    var(--color-surface2) 50%, 
+    var(--color-surface) 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
 }
