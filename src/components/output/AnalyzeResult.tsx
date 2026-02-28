@@ -1,195 +1,177 @@
-import { motion } from "framer-motion";
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { MatchResult, Priority } from "@/types";
 
 const PRIORITY_COLOR: Record<Priority, string> = {
-  high:   "bg-[#e76f51] shadow-[0_0_12px_rgba(231,111,81,0.6)]",
-  medium: "bg-[#e9c46a] shadow-[0_0_12px_rgba(233,196,106,0.5)]",
-  low:    "bg-[#2a9d8f] shadow-[0_0_12px_rgba(42,157,143,0.5)]",
+  high:   "border-l-[#f5c842] shadow-[0_0_12px_rgba(245,200,66,0.1)]",
+  medium: "border-l-[#e8ff47] shadow-[0_0_12px_rgba(232,255,71,0.1)]",
+  low:    "border-l-[rgba(255,255,255,0.2)]",
 };
 
 interface AnalyzeResultProps {
   matchResult: MatchResult;
-  compact?: boolean;
 }
 
-export default function AnalyzeResult({ matchResult, compact = false }: AnalyzeResultProps) {
-  const scoreSize = compact ? "text-5xl md:text-6xl" : "text-7xl md:text-8xl";
-  const spacing = compact ? "space-y-6" : "space-y-10";
-  const gapSize = compact ? "gap-4" : "gap-6";
+export default function AnalyzeResult({ matchResult }: AnalyzeResultProps) {
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    if (matchResult.overallScore >= 80) {
+      setShowConfetti(true);
+      const t = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [matchResult.overallScore]);
+
+  const scoreCircumference = 2 * Math.PI * 45; // r=45
+  const scoreOffset = scoreCircumference - (matchResult.overallScore / 100) * scoreCircumference;
 
   return (
-    <div className={spacing}>
-      {/* Score Overview */}
-      <div className="flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
-        <div className="flex items-baseline gap-4">
-          <span className={`font-syne font-extrabold text-[#2a9d8f] leading-none tracking-tighter drop-shadow-[0_0_32px_rgba(42,157,143,0.3)] ${scoreSize}`}>
-            {matchResult.overallScore}
-          </span>
-          <span className="font-mono text-[#78828f] text-sm uppercase font-bold tracking-widest">
-            / 100 <br/> Match
-          </span>
-        </div>
-        <div className="flex-1 space-y-4 pb-2">
-          {[
-            { label: "Skills",     value: matchResult.skillsScore,     color: "bg-[#2a9d8f]" },
-            { label: "Experience", value: matchResult.experienceScore, color: "bg-[#e9c46a]" },
-            { label: "Keywords",   value: matchResult.keywordsScore,   color: "bg-[#e76f51]" },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="space-y-2">
-              <div className="flex justify-between font-mono text-[11px] font-bold uppercase tracking-widest">
-                <span className="text-[#78828f]">{label}</span>
-                <span className="text-[#f5f5f4]">{value}%</span>
-              </div>
-              <div className="h-2 rounded-full bg-[#1e2530] overflow-hidden shadow-inner">
-                <motion.div 
-                  className={`h-full rounded-full bar-fill ${color} opacity-90`} 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${value}%` }}
-                  transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                />
-              </div>
-            </div>
-          ))}
+    <div className="space-y-12">
+      <AnimatePresence>
+        {showConfetti && (
+          <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden flex items-center justify-center">
+            {[...Array(40)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 1, x: 0, y: 0, scale: 0 }}
+                animate={{
+                  opacity: 0,
+                  x: (Math.random() - 0.5) * 800,
+                  y: (Math.random() - 0.5) * 800,
+                  scale: Math.random() * 1.5 + 0.5,
+                  rotate: Math.random() * 360,
+                }}
+                transition={{ duration: 2, ease: "easeOut" }}
+                className="absolute w-2 h-2"
+                style={{
+                  backgroundColor: Math.random() > 0.5 ? "#e8ff47" : "#f5c842",
+                  borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Centered Match Score */}
+      <div className="flex flex-col items-center justify-center relative py-8">
+        <div className="relative w-40 h-40 flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full -rotate-90">
+            <circle
+              cx="80" cy="80" r="45"
+              stroke="rgba(255,255,255,0.05)"
+              strokeWidth="6" fill="none"
+            />
+            <motion.circle
+              cx="80" cy="80" r="45"
+              stroke="#e8ff47"
+              strokeWidth="6" fill="none"
+              strokeLinecap="round"
+              strokeDasharray={scoreCircumference}
+              initial={{ strokeDashoffset: scoreCircumference }}
+              animate={{ strokeDashoffset: scoreOffset }}
+              transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+              className="drop-shadow-[0_0_12px_rgba(232,255,71,0.6)]"
+            />
+          </svg>
+          <div className="flex flex-col items-center">
+            <motion.span
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5, type: "spring" }}
+              className="text-5xl font-extrabold text-white tracking-tighter"
+            >
+              {matchResult.overallScore}
+            </motion.span>
+            <span className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Match</span>
+          </div>
         </div>
       </div>
 
-      {/* Strengths & Gaps */}
+      {/* Strengths & Gaps (2 columns) */}
       {(matchResult.strengths?.length > 0 || matchResult.gaps?.length > 0) && (
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6">
           {matchResult.strengths?.length > 0 && (
-            <div className="space-y-3">
-              <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Strengths</p>
+            <div className="space-y-4">
+              <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Strengths</h3>
               {matchResult.strengths.map((s, i) => (
-                <motion.div 
-                  key={i} 
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-3 p-3.5 rounded-xl border border-[#2a9d8f]/15 bg-[#2a9d8f]/5"
-                >
-                  <span className="text-[#2a9d8f] mt-0.5">•</span>
-                  <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{s}</p>
-                </motion.div>
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(232,255,71,0.1)]">
+                  <span className="text-[#e8ff47] mt-0.5 text-sm">✓</span>
+                  <p className="text-[#f0f2ff] text-sm leading-relaxed">{s}</p>
+                </div>
               ))}
             </div>
           )}
           {matchResult.gaps?.length > 0 && (
-            <div className="space-y-3">
-              <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e76f51] uppercase">Gaps</p>
+            <div className="space-y-4">
+              <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Gaps</h3>
               {matchResult.gaps.map((g, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-3 p-3.5 rounded-xl border border-[#e76f51]/15 bg-[#e76f51]/5"
-                >
-                  <span className="text-[#e76f51] mt-0.5">•</span>
-                  <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{g}</p>
-                </motion.div>
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(232,255,71,0.1)]">
+                  <span className="text-[#f5c842] mt-0.5 text-sm">✗</span>
+                  <p className="text-[#f0f2ff] text-sm leading-relaxed">{g}</p>
+                </div>
               ))}
             </div>
           )}
         </div>
       )}
 
-      {/* Suggestions */}
+      {/* Suggestions (Full width, left border) */}
       {matchResult.suggestions?.length > 0 && (
         <div className="space-y-4">
-          <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Suggestions</p>
+          <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Suggestions</h3>
           <div className="grid gap-3">
             {matchResult.suggestions.map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                className="flex items-start gap-4 p-4 rounded-2xl border border-[#1e2530] bg-[#12151a]/50 hover:bg-[#12151a] hover:border-[#2a9d8f]/40 transition-all group"
-              >
-                <span className={`mt-1.5 w-2 h-2 rounded-full flex-shrink-0 ${PRIORITY_COLOR[s.priority]}`} />
-                <p className="font-syne text-[14px] text-[#f5f5f4] leading-relaxed group-hover:text-white transition-colors">{s.text}</p>
-              </motion.div>
+              <div key={i} className={`p-5 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] border-l-[3px] ${PRIORITY_COLOR[s.priority]}`}>
+                <p className="text-[#f0f2ff] text-[14px] leading-relaxed">{s.text}</p>
+              </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ATS Issues */}
+      {/* ATS Issues (Warning cards with amber border) */}
       {matchResult.atsIssues?.length > 0 && (
-        <div className="space-y-3">
-          <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">ATS Issues</p>
-          {matchResult.atsIssues.map((issue, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.05 }}
-              className="flex items-start gap-3 p-3.5 rounded-xl border border-[#e9c46a]/15 bg-[#e9c46a]/5"
-            >
-              <span className="text-[#e9c46a] mt-0.5">!</span>
-              <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{issue}</p>
-            </motion.div>
-          ))}
+        <div className="space-y-4">
+          <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">ATS Issues</h3>
+          <div className="grid gap-3">
+            {matchResult.atsIssues.map((issue, i) => (
+              <div key={i} className="p-5 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)] border-l-[3px] border-l-[#f5c842]">
+                <p className="text-[#f0f2ff] text-[14px] leading-relaxed">{issue}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Action Plan */}
+      {/* Action Plan (2 columns, numbered lists) */}
       {matchResult.actionPlan && (
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-6">
           {matchResult.actionPlan.quickWins?.length > 0 && (
-            <div className="space-y-3">
-              <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#2a9d8f] uppercase">Quick Wins</p>
+            <div className="space-y-4">
+              <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Quick Wins</h3>
               {matchResult.actionPlan.quickWins.map((w, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-3 p-3.5 rounded-xl border border-[#1e2530] bg-[#12151a]/50"
-                >
-                  <span className="font-mono text-[#2a9d8f] font-bold text-sm">{i + 1}.</span>
-                  <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{w}</p>
-                </motion.div>
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(232,255,71,0.1)]">
+                  <span className="text-[#e8ff47] font-bold text-sm">{i + 1}.</span>
+                  <p className="text-[#f0f2ff] text-sm leading-relaxed">{w}</p>
+                </div>
               ))}
             </div>
           )}
           {matchResult.actionPlan.longTerm?.length > 0 && (
-            <div className="space-y-3">
-              <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#e9c46a] uppercase">Long-Term</p>
+            <div className="space-y-4">
+              <h3 className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">Long-Term</h3>
               {matchResult.actionPlan.longTerm.map((l, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-3 p-3.5 rounded-xl border border-[#1e2530] bg-[#12151a]/50"
-                >
-                  <span className="font-mono text-[#e9c46a] font-bold text-sm">{i + 1}.</span>
-                  <p className="font-mono text-sm text-[#f5f5f4] leading-relaxed">{l}</p>
-                </motion.div>
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(232,255,71,0.1)]">
+                  <span className="text-[#f5c842] font-bold text-sm">{i + 1}.</span>
+                  <p className="text-[#f0f2ff] text-sm leading-relaxed">{l}</p>
+                </div>
               ))}
             </div>
           )}
-        </div>
-      )}
-
-      {/* Missing Keywords */}
-      {matchResult.missingKeywords?.length > 0 && (
-        <div className="space-y-4">
-          <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[#78828f] uppercase">Missing Keywords</p>
-          <div className="flex flex-wrap gap-2">
-            {matchResult.missingKeywords.map((kw, i) => (
-              <motion.span 
-                key={kw}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.03 }}
-                className="font-mono text-xs px-3 py-1.5 rounded-lg bg-[#1e2530]/40 border border-[#1e2530] text-[#8a939e] hover:border-[#2a9d8f]/30 hover:text-[#2a9d8f] transition-all cursor-default"
-              >
-                {kw}
-              </motion.span>
-            ))}
-          </div>
         </div>
       )}
     </div>

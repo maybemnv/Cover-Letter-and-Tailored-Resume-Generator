@@ -14,7 +14,7 @@ import OutputPanel from "@/components/OutputPanel";
 import StepIndicator from "@/components/StepIndicator";
 
 export default function Home() {
-  const { mode, setBaseLatexTemplate } = useAppStore();
+  const { setBaseLatexTemplate } = useAppStore();
   const [validationError, setValidationError] = useState(false);
 
   useEffect(() => {
@@ -23,11 +23,6 @@ export default function Home() {
       .then((d) => { if (d.latex) setBaseLatexTemplate(d.latex); })
       .catch(() => {});
   }, [setBaseLatexTemplate]);
-
-  useEffect(() => { setValidationError(false); }, [mode]);
-
-  const showJD = mode === "analyze" || mode === "cover-letter";
-  const showResume = mode !== "latex";
 
   return (
     <>
@@ -39,7 +34,7 @@ export default function Home() {
             background: "rgba(255,255,255,0.03)",
             backdropFilter: "blur(12px)",
             border: "1px solid rgba(255,255,255,0.08)",
-            color: "#f5f5f4",
+            color: "#ffffff",
             fontFamily: "var(--font-dm-mono-var, 'DM Mono')",
             fontSize: "13px",
           },
@@ -64,20 +59,16 @@ export default function Home() {
             className="space-y-8 max-w-6xl mx-auto"
           >
             <div className="flex justify-center -mb-2">
-              <StepIndicator mode={mode} />
+              <StepIndicator />
             </div>
 
-            <div className={`grid gap-6 ${showResume && showJD ? "lg:grid-cols-2" : "grid-cols-1"}`}>
-              {showResume && (
-                <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError && !showResume ? "ring-1 ring-[#e76f51]/50" : ""}`}>
-                  <ResumeCard hasError={validationError} />
-                </div>
-              )}
-              {(showJD || mode === "latex") && (
-                <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError ? "ring-1 ring-[#e76f51]/50" : ""}`}>
-                  <JDCard hasError={validationError} />
-                </div>
-              )}
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError ? "ring-1 ring-[#e76f51]/50" : ""}`}>
+                <ResumeCard hasError={validationError} />
+              </div>
+              <div className={`glass-card rounded-[24px] p-6 lg:p-8 ${validationError ? "ring-1 ring-[#e76f51]/50" : ""}`}>
+                <JDCard hasError={validationError} />
+              </div>
             </div>
 
             <div className="glass-card rounded-[24px] p-6 lg:p-8 space-y-6">

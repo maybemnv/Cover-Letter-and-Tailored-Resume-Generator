@@ -25,19 +25,19 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#2a9d8f] animate-pulse" />
-          <span className="font-mono text-[10px] text-[#4b5563] uppercase tracking-wider">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#e8ff47] animate-pulse" />
+          <span className="text-[0.7rem] uppercase tracking-[0.08em] text-[#9aa821] font-bold">
             ATS-Optimized LaTeX Resume
           </span>
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 p-1 rounded-lg bg-[#12151a] border border-[#1e2530]">
+          <div className="flex items-center gap-1 p-1 rounded-lg bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.08)]">
             <button
               onClick={() => setView("code")}
               className={`px-3 py-1.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
                 view === "code"
-                  ? "bg-[#2a9d8f] text-black"
+                  ? "bg-[#e8ff47] text-[#05070f]"
                   : "text-[#78828f] hover:text-[#f5f5f4]"
               }`}
             >
@@ -47,7 +47,7 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
               onClick={() => setView("preview")}
               className={`px-3 py-1.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider transition-all ${
                 view === "preview"
-                  ? "bg-[#2a9d8f] text-black"
+                  ? "bg-[#e8ff47] text-[#05070f]"
                   : "text-[#78828f] hover:text-[#f5f5f4]"
               }`}
             >
@@ -62,7 +62,7 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="rounded-2xl overflow-hidden border border-[#1e2530] shadow-2xl relative"
+          className="rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] shadow-2xl relative"
         >
           <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 bg-[#080a0c]/90 backdrop-blur-sm">
             <div className="flex gap-2">
@@ -104,16 +104,16 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
-          className="rounded-2xl overflow-hidden border border-[#1e2530] bg-[#12151a]/50 p-8 min-h-[400px]"
+          className="rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-8 min-h-[400px]"
         >
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#2a9d8f]/10 border border-[#2a9d8f]/30">
-              <svg className="w-8 h-8 text-[#2a9d8f]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#e8ff47]/10 border border-[#e8ff47]/30">
+              <svg className="w-8 h-8 text-[#e8ff47]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
               </svg>
             </div>
             <div>
-              <p className="font-syne text-lg font-bold text-[#f5f5f4]">Preview Mode</p>
+              <p className="font-syne text-lg font-bold text-[#f0f2ff]">Preview Mode</p>
               <p className="font-mono text-[11px] text-[#78828f] mt-1">
                 Compile this LaTeX code on Overleaf or your preferred editor
               </p>
@@ -123,7 +123,7 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
                 href="https://www.overleaf.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[10px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#2a9d8f] text-black hover:bg-[#228578] transition-all"
+                className="font-mono text-[10px] font-bold uppercase tracking-wider px-4 py-2 rounded-xl bg-[#e8ff47] text-[#05070f] hover:bg-[#d4ed31] transition-all"
               >
                 Open Overleaf
               </a>
@@ -137,7 +137,7 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleCopy}
-          className="flex-1 py-4 rounded-xl border border-[#e9c46a]/40 text-[#e9c46a] font-syne font-bold tracking-wide hover:bg-[#e9c46a] hover:text-[#030405] transition-all flex items-center justify-center gap-2"
+          className="flex-1 py-4 rounded-xl border border-[#e8ff47]/40 text-[#e8ff47] font-syne font-bold tracking-wide hover:bg-[#e8ff47] hover:text-[#05070f] transition-all flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -150,7 +150,7 @@ export default function LatexResult({ latexCode, copied, onCopy, onDownload }: L
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={onDownload}
-          className="flex-1 py-4 rounded-xl bg-[#2a9d8f]/10 border border-[#2a9d8f]/40 text-[#2a9d8f] font-syne font-bold tracking-wide hover:bg-[#2a9d8f] hover:text-[#030405] transition-all flex items-center justify-center gap-2"
+          className="flex-1 py-4 rounded-xl bg-[#f5c842]/10 border border-[#f5c842]/40 text-[#f5c842] font-syne font-bold tracking-wide hover:bg-[#f5c842] hover:text-[#05070f] transition-all flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />

@@ -3,29 +3,14 @@
 import { useAppStore } from "@/store/appStore";
 import { motion } from "framer-motion";
 
-export default function StepIndicator({ mode }: { mode: string }) {
+export default function StepIndicator() {
   const { resumeText, jdText, status } = useAppStore();
 
-  const needsResume = mode !== "latex";
-  const needsJD = mode === "analyze" || mode === "cover-letter";
-
   const steps = [
-    needsResume && { n: 1, label: "Resume", done: !!resumeText },
-    (needsJD || mode === "latex") && {
-      n: needsResume ? 2 : 1,
-      label: mode === "latex" ? "Job Description" : "JD",
-      done: !!jdText,
-    },
-    {
-      n: (needsResume ? 1 : 0) + (needsJD || mode === "latex" ? 1 : 0) + 1,
-      label:
-        mode === "analyze" ? "Analyze"
-        : mode === "cover-letter" ? "Generate"
-        : mode === "quick-tips" ? "Get Tips"
-        : "Tailor",
-      active: true,
-    },
-  ].filter(Boolean) as { n: number; label: string; done?: boolean; active?: boolean }[];
+    { n: 1, label: "Resume", done: !!resumeText },
+    { n: 2, label: "Job Description", done: !!jdText },
+    { n: 3, label: "Analyze", active: true },
+  ];
 
   return (
     <div className="flex items-center gap-0 py-2">
@@ -44,10 +29,10 @@ export default function StepIndicator({ mode }: { mode: string }) {
               <div
                 className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold transition-all duration-300 ${
                   isDone
-                    ? "bg-[#2a9d8f] text-[#08090a]"
+                    ? "bg-[#e8ff47] text-[#05070f]"
                     : isActive
-                    ? "bg-[#1f2123] text-[#f5f5f4] ring-1 ring-[#f5f5f4]/20"
-                    : "bg-[#111213] text-[#374151] ring-1 ring-[#1f2123]"
+                    ? "bg-[rgba(255,255,255,0.03)] text-white border border-[rgba(255,255,255,0.08)]"
+                    : "bg-[#0c0e18] text-[#374151] border border-[#1a1d2e]"
                 }`}
               >
                 {isDone ? (
@@ -58,15 +43,15 @@ export default function StepIndicator({ mode }: { mode: string }) {
                   step.n
                 )}
                 {status === "processing" && isActive && (
-                  <span className="absolute inset-0 rounded-full border border-[#2a9d8f] border-t-transparent animate-spin" />
+                  <span className="absolute inset-0 rounded-full border border-t-[#e8ff47] border-white/10 animate-spin" />
                 )}
               </div>
               <span
                 className={`font-mono text-[10px] font-medium uppercase tracking-widest whitespace-nowrap ${
                   isDone
-                    ? "text-[#2a9d8f]"
+                    ? "text-[#e8ff47]"
                     : isActive
-                    ? "text-[#f5f5f4]"
+                    ? "text-white"
                     : "text-[#374151]"
                 }`}
               >
@@ -75,7 +60,7 @@ export default function StepIndicator({ mode }: { mode: string }) {
             </motion.div>
 
             {idx < steps.length - 1 && (
-              <div className="mx-4 w-10 border-b border-dashed border-[#1f2123]" />
+               <div className="mx-4 w-10 border-b border-dashed border-[rgba(255,255,255,0.08)]" />
             )}
           </div>
         );

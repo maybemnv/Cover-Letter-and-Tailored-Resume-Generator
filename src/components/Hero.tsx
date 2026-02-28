@@ -14,7 +14,7 @@ export default function Hero() {
       <div 
         className="absolute w-[800px] h-[600px] md:w-[1000px] md:h-[800px] pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 40%, rgba(0,200,180,0.15), transparent 70%)",
+          background: "radial-gradient(ellipse at 50% 40%, rgba(232,255,71,0.15), transparent 70%)",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
@@ -29,9 +29,9 @@ export default function Hero() {
         className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-4xl px-4"
       >
         {/* Pill Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] shadow-[0_0_12px_rgba(0,200,180,0.08)] backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] shadow-[0_0_12px_rgba(232,255,71,0.08)] backdrop-blur-md">
           <p className="font-mono text-[10px] sm:text-[11px] font-medium tracking-[0.15em] text-[#a1a1aa] uppercase">
-            AI Resume Intelligence <span className="text-[#00c8b4] ml-1">✦</span>
+            AI Resume Intelligence <span className="text-[#e8ff47] ml-1">✦</span>
           </p>
         </div>
 
@@ -40,9 +40,9 @@ export default function Hero() {
           <h1 className="text-[2.5rem] sm:text-[3.5rem] lg:text-[4.5rem] font-bold text-white leading-[1.05] tracking-tight">
             Your resume,{" "}
             <br className="hidden sm:block" />
-            <span className="relative inline-block text-[#00c8b4]">
+            <span className="relative inline-block text-[#e8ff47]">
               perfectly matched.
-              <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#00c8b4]/60" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none">
+              <svg className="absolute w-full h-3 -bottom-1 left-0 text-[#e8ff47]/60" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none">
                 <path d="M2.00038 9.87693C55.0841 -0.56948 144.155 -2.43301 198.053 9.87693" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
               </svg>
             </span>
@@ -58,7 +58,7 @@ export default function Hero() {
         <div className="pt-2">
           <button
             onClick={scrollToForm}
-            className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#00c8b4] text-[#05070f] font-semibold text-[15px] sm:text-[16px] tracking-wide transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_32px_rgba(0,200,180,0.4)]"
+            className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#e8ff47] text-[#05070f] font-semibold text-[15px] sm:text-[16px] tracking-wide transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_32px_rgba(232,255,71,0.4)]"
           >
             Analyze Now <span className="group-hover:rotate-12 transition-transform duration-300">✦</span>
             <div className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />

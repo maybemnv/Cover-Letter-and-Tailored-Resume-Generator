@@ -1,4 +1,4 @@
-export type Mode = "analyze" | "cover-letter" | "quick-tips" | "latex";
+export type TabMode = "analyze" | "cover-letter" | "quick-tips" | "latex";
 export type ExportFormat = "docx" | "pdf" | "txt";
 export type Priority = "high" | "medium" | "low";
 
@@ -24,11 +24,10 @@ export interface MatchResult {
 }
 
 export interface AppOutput {
-  type: Mode;
-  matchResult?: MatchResult;
-  coverLetter?: string;
-  tips?: string[];
-  latexCode?: string;
+  matchResult?: MatchResult | null;
+  coverLetter?: string | null;
+  tips?: string[] | null;
+  latexCode?: string | null;
 }
 
 export type Status = "idle" | "processing" | "complete" | "error";

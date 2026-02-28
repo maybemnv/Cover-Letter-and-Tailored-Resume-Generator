@@ -6,10 +6,10 @@
   --color-surface2: #10121e;
   --color-border: rgba(255,255,255,0.08);
   --color-border-solid: #1a1d2e;
-  --color-accent: #00c8b4;
-  --color-accent2: #e9c46a;
+  --color-accent: #e8ff47;
+  --color-accent2: #f5c842;
   --color-accent3: #e76f51;
-  --color-text: #f0f2ff;
+  --color-text: #ffffff;
   --color-text-muted: #6b7280;
   --color-text-dim: #374151;
 
@@ -89,12 +89,12 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--color-accent);
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 200, 180, 0.5);
+  box-shadow: 0 0 10px rgba(232, 255, 71, 0.5);
   transition: box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 16px rgba(0, 200, 180, 0.8);
+  box-shadow: 0 0 16px rgba(232, 255, 71, 0.8);
 }
 input[type="range"]::-moz-range-thumb {
   width: 14px;
@@ -129,11 +129,21 @@ input[type="range"]::-moz-range-thumb {
   100% { filter: hue-rotate(30deg); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(232,255,71,0) 0%, rgba(232,255,71,0.2) 50%, rgba(232,255,71,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
+
 /* Focus states */
 textarea:focus, select:focus, input:focus {
   outline: none;
   border-color: var(--color-accent) !important;
-  box-shadow: 0 0 0 2px rgba(0, 200, 180, 0.15) !important;
+  box-shadow: 0 0 20px rgba(232, 255, 71, 0.15) !important;
 }
 
 /* Autofill */
@@ -147,7 +157,7 @@ select:-webkit-autofill {
 
 /* Selection */
 ::selection {
-  background: rgba(0, 200, 180, 0.2);
+  background: rgba(232, 255, 71, 0.2);
   color: var(--color-text);
 }
 
